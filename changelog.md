@@ -1,3 +1,18 @@
+---v1.0.1
+# Sleep v1.0.1 Release
+
+- Official release of **Sleep** Android music client fusing Spotify and YouTube Music
+- Automated release workflow with APK files (`Sleep.apk`, `Sleep-with-Google-Cast.apk`, `Sleep-izzy.apk`) under GitHub Release Assets
+- Dark & Red Spotify-inspired design system with pure dark mode
+- Multi-source synced lyrics engine (SimpMusic, Better Lyrics, LRCLIB, YouTube Music)
+- Built-in Equalizer with sound profiles
+- Offline cache & zero setup free account support
+
+---v1.0.0
+# Sleep Initial Release
+
+- Initial release of Sleep Android music client
+
 ---v13.4.0
 # MAINTENANCE MODE
 Metrolist is currently in maintenance mode. This means we will only be fixing bugs and making minor improvements. Please do not submit PRs for new features or major changes, as they will not be accepted.
