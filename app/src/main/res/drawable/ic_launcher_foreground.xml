@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:height="108dp"
+    android:width="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="0"
+        android:translateY="0">
+        <!-- Moon Crescent and Sleep Music Icon Motif -->
+        <path
+            android:pathData="M54,26 C38.5,26 26,38.5 26,54 C26,69.5 38.5,82 54,82 C65.2,82 74.8,75.4 79.1,65.8 C76.6,67.2 73.7,68 70.6,68 C58.2,68 48.1,57.9 48.1,45.5 C48.1,36.5 53.4,28.7 61.1,25 C58.8,25.6 56.4,26 54,26 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:startX="26"
+                    android:startY="26"
+                    android:endX="82"
+                    android:endY="82"
+                    android:type="linear">
+                    <item android:offset="0.0" android:color="#FFF87171" />
+                    <item android:offset="1.0" android:color="#FFE11D48" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <!-- Minimal Note Symbol inside moon arc -->
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M66,42v16.2c-0.7,-0.4 -1.5,-0.7 -2.4,-0.7c-2.5,0 -4.6,2.1 -4.6,4.6s2.1,4.6 4.6,4.6s4.6,-2.1 4.6,-4.6V48h5v-6H66z"/>
+    </group>
+</vector>
