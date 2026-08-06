@@ -9,18 +9,18 @@
 
 </div>
 
-## What is Meld?
+## What is Sleep?
 
-**Meld** is an Android music client that brings together the best of Spotify and YouTube Music. It uses your Spotify account to power personalized recommendations, search, and home content — while streaming audio through YouTube Music.
+**Sleep** is an Android music client that brings together the best of Spotify and YouTube Music. It uses your Spotify account to power personalized recommendations, search, and home content — while streaming audio through YouTube Music.
 
-The name "Meld" reflects the core idea: **melding** two music platforms into a single, unified listening experience.
+The name "Sleep" reflects the core idea: bringing together two music platforms into a single, unified listening experience.
 
-### Why Meld?
+### Why Sleep?
 
 - **Spotify's personalization** — Your top tracks, favorite artists, and curated playlists from Spotify drive the recommendations
 - **YouTube Music's catalog** — Access YouTube Music's vast library for streaming, including rare tracks, live performances, and remixes
 - **No setup required** — Just log in with your Spotify account directly in the app. No developer dashboard, no Client ID, no extra steps
-- **No Spotify Premium required** — Meld uses Spotify's data APIs (not streaming), so a free Spotify account is all you need
+- **No Spotify Premium required** — Sleep uses Spotify's data APIs (not streaming), so a free Spotify account is all you need
 - **Built-in recommendation engine** — A custom algorithm builds personalized queues using your Spotify listening history, without relying on deprecated API endpoints
 
 ## Features
@@ -79,7 +79,7 @@ The name "Meld" reflects the core idea: **melding** two music platforms into a s
 
 <div align="center">
 
-**Enjoying Meld?** Consider supporting the project
+**Enjoying Sleep?** Consider supporting the project
 
 <a href="https://buymeacoffee.com/francescogm"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee"></a>
 
@@ -87,14 +87,14 @@ The name "Meld" reflects the core idea: **melding** two music platforms into a s
 
 ## How the Spotify Integration Works
 
-Meld connects to your Spotify account through a built-in WebView login — no developer setup or Client ID required. Here's what happens under the hood:
+Sleep connects to your Spotify account through a built-in WebView login — no developer setup or Client ID required. Here's what happens under the hood:
 
-1. **Authentication** — You log in with your regular Spotify credentials (email, Google, Facebook, or Apple) directly inside the app. Meld extracts session cookies and generates access tokens using TOTP, keeping you logged in without manual token management.
-2. **Data layer** — Meld communicates with Spotify primarily through GraphQL endpoints (for playlists, liked songs, artist details, albums, new releases, and search) with REST API fallbacks for top tracks and top artists. GraphQL avoids the aggressive rate limits that affect REST endpoints.
-3. **Home screen** — When "Use Spotify for Home" is enabled, Meld builds a personalized home feed from your top tracks, top artists, playlists, and new releases. Enable "Spotify only" to hide all YouTube-based sections for a fully Spotify-driven experience.
+1. **Authentication** — You log in with your regular Spotify credentials (email, Google, Facebook, or Apple) directly inside the app. Sleep extracts session cookies and generates access tokens using TOTP, keeping you logged in without manual token management.
+2. **Data layer** — Sleep communicates with Spotify primarily through GraphQL endpoints (for playlists, liked songs, artist details, albums, new releases, and search) with REST API fallbacks for top tracks and top artists. GraphQL avoids the aggressive rate limits that affect REST endpoints.
+3. **Home screen** — When "Use Spotify for Home" is enabled, Sleep builds a personalized home feed from your top tracks, top artists, playlists, and new releases. Enable "Spotify only" to hide all YouTube-based sections for a fully Spotify-driven experience.
 4. **Profile caching** — Your Spotify profile data (top tracks, top artists with images) is persisted locally and served instantly on app restart. Background network refreshes only happen when the cache is stale (6-hour TTL), keeping the home screen fast and responsive.
 5. **Search** — When "Use Spotify for Search" is enabled, search queries go through Spotify's GraphQL search. Results are displayed as Spotify content; tapping a song resolves it to YouTube Music for playback.
-6. **Queue generation** — When you play a Spotify-sourced song, Meld's recommendation engine builds a queue by:
+6. **Queue generation** — When you play a Spotify-sourced song, Sleep's recommendation engine builds a queue by:
    - Fetching top tracks from the song's artists
    - Finding genre-similar artists from your taste profile
    - Mixing in tracks from your personal top tracks pool
@@ -104,12 +104,12 @@ Meld connects to your Spotify account through a built-in WebView login — no de
 
 ## How the Qobuz Lossless Integration Works
 
-When the Qobuz toggle is enabled (Settings → Integrations → Spotify → "Use Qobuz for lossless playback"), Meld routes audio through Qobuz's FLAC catalog instead of YouTube Music's lossy AAC streams. The integration is fully opt-in and falls back to YouTube Music whenever Qobuz can't deliver — there's no playback interruption either way.
+When the Qobuz toggle is enabled (Settings → Integrations → Spotify → "Use Qobuz for lossless playback"), Sleep routes audio through Qobuz's FLAC catalog instead of YouTube Music's lossy AAC streams. The integration is fully opt-in and falls back to YouTube Music whenever Qobuz can't deliver — there's no playback interruption either way.
 
-1. **Match resolution** — For every track about to play, Meld looks up the song on Qobuz. Spotify-sourced tracks include the **ISRC** (the universal track identifier — the same ISRC points to the same recording across Spotify, Qobuz, Tidal, etc.) which produces an exact, deterministic match. YT-native tracks fall back to fuzzy title/artist/album matching using the cached song metadata.
-2. **Backend cycling** — Qobuz is accessed through three independent open community resolvers (Monokenny, Jumo, Squid). The primary backend is configurable; if it returns a preview, captcha challenge, or any other failure, Meld automatically retries on the alternates before giving up. Backends that hit a captcha are skipped for five minutes to avoid wasted retries.
+1. **Match resolution** — For every track about to play, Sleep looks up the song on Qobuz. Spotify-sourced tracks include the **ISRC** (the universal track identifier — the same ISRC points to the same recording across Spotify, Qobuz, Tidal, etc.) which produces an exact, deterministic match. YT-native tracks fall back to fuzzy title/artist/album matching using the cached song metadata.
+2. **Backend cycling** — Qobuz is accessed through three independent open community resolvers (Monokenny, Jumo, Squid). The primary backend is configurable; if it returns a preview, captcha challenge, or any other failure, Sleep automatically retries on the alternates before giving up. Backends that hit a captcha are skipped for five minutes to avoid wasted retries.
 3. **Persistent caching** — A successful match (the Qobuz track ID, hi-res tier, bit depth, sample rate) is saved in the local database keyed by the YouTube ID, so the next play of the same song skips the search step entirely and resolves in a few hundred milliseconds. ISRCs discovered during a Qobuz resolve are also written back to the song's row, which improves the accuracy of future matches across the whole library.
-4. **Quality tier downgrade** — When the saved match knows the track only exists at CD quality on Qobuz (not Hi-Res), Meld caps the requested quality automatically to avoid the wasted "preview returned" round-trip.
+4. **Quality tier downgrade** — When the saved match knows the track only exists at CD quality on Qobuz (not Hi-Res), Sleep caps the requested quality automatically to avoid the wasted "preview returned" round-trip.
 5. **YouTube fallback** — If every Qobuz backend fails (track not in catalog, all resolvers down, network issue, etc.), playback proceeds through the standard YouTube Music pipeline with the lossy AAC stream. The fallback is silent and instant; subsequent plays will try Qobuz again.
 
 > **Important — third-party services:** The Qobuz resolvers are run by independent community projects, not by us. They may go down, get rate-limited, or stop working at any time without notice. When they do, playback automatically falls back to YouTube Music — but you may notice slower start times during the failed Qobuz attempt.
@@ -120,7 +120,7 @@ When the Qobuz toggle is enabled (Settings → Integrations → Spotify → "Use
 
 ### Spotify Integration
 
-1. In Meld, go to **Settings → Integrations → Spotify**
+1. In Sleep, go to **Settings → Integrations → Spotify**
 2. Tap **Login** — a Spotify login page will open directly inside the app
 3. Sign in with your Spotify account (email/password, Google, Facebook, or Apple)
 4. Once logged in, enable **"Use Spotify for Search"** and/or **"Use Spotify for Home"** — these are off by default
@@ -129,7 +129,7 @@ When the Qobuz toggle is enabled (Settings → Integrations → Spotify → "Use
 
 > **Note:** No developer account, Client ID, or any external setup is required. Just log in with your regular Spotify account — free or Premium.
 
-> **Important:** For reliable playback, disable battery optimization for Meld in your phone settings (**Settings → Apps → Meld → Battery → Unrestricted**). Without this, Android may throttle the app and cause long delays before songs start playing.
+> **Important:** For reliable playback, disable battery optimization for Sleep in your phone settings (**Settings → Apps → Sleep → Battery → Unrestricted**). Without this, Android may throttle the app and cause long delays before songs start playing.
 
 ### Qobuz Lossless (Optional)
 
@@ -140,7 +140,7 @@ When the Qobuz toggle is enabled (Settings → Integrations → Spotify → "Use
 5. Pick a **resolver backend** — Monokenny is the recommended default; Jumo and Squid are alternates that the app also rotates through automatically on failure
 6. Set the **country code** (ISO two-letter, e.g. `US`, `IT`, `FR`) — this affects which regional Qobuz catalog is queried
 
-That's it — the next time you play a song, Meld will try Qobuz first and fall back to YouTube Music if the track isn't available there. The toggle can be turned off at any time to revert to YouTube-only playback.
+That's it — the next time you play a song, Sleep will try Qobuz first and fall back to YouTube Music if the track isn't available there. The toggle can be turned off at any time to revert to YouTube-only playback.
 
 > **Hot-reload:** Toggling Qobuz on/off, switching backend, quality, or country code automatically reloads the currently playing track so the new source takes effect immediately. **No app restart is required.**
 
@@ -151,9 +151,9 @@ For GitHub Actions builds, add these secrets to your repository:
 
 ## FAQ
 
-### Q: How do I download and install Meld?
+### Q: How do I download and install Sleep?
 
-Go to the [latest release](https://github.com/FrancescoGrazioso/Meld/releases/latest) and download the **Meld.apk** file. Open it on your Android device — you may need to allow "Install from unknown sources" in your phone's settings when prompted. You do **not** need to download the source code files.
+Go to the [latest release](https://github.com/ghoshshovon80-lang/sleep/releases/latest) and download the **Sleep.apk** file. Open it on your Android device — you may need to allow "Install from unknown sources" in your phone's settings when prompted. You do **not** need to download the source code files.
 
 ### Q: I logged into Spotify but my playlists aren't showing
 
@@ -163,7 +163,7 @@ After logging in, make sure you've enabled **"Use Spotify for Home"** and/or **"
 
 If songs aren't playing or take a long time to start, try the following:
 
-1. **Disable battery optimization for Meld** — Go to your phone's **Settings → Apps → Meld → Battery → Unrestricted** (or "No restrictions"). This is the most common fix. Android aggressively throttles background network and CPU usage for battery-optimized apps, which directly impacts Meld's stream resolution pipeline. Without this setting, playback may take over a minute to start, especially when the screen is locked.
+1. **Disable battery optimization for Sleep** — Go to your phone's **Settings → Apps → Sleep → Battery → Unrestricted** (or "No restrictions"). This is the most common fix. Android aggressively throttles background network and CPU usage for battery-optimized apps, which directly impacts Sleep's stream resolution pipeline. Without this setting, playback may take over a minute to start, especially when the screen is locked.
 2. Wait a moment — the first playback after a fresh launch requires initializing the streaming engine (signature verification, token generation). Subsequent plays are much faster.
 3. Check your internet connection
 4. Try playing a different song
@@ -171,11 +171,11 @@ If songs aren't playing or take a long time to start, try the following:
 
 In general for the first time you play a song it's normal for it to take alonger time, the process to download metadata from spotify, look for a correspondent on youtube and match it can take time, for some song more than others! From the second time it will be stored in a local DB and this process won't need to be run again
 
-### Q: Does Meld work with Bluetooth headphones / AirPods?
+### Q: Does Sleep work with Bluetooth headphones / AirPods?
 
-Yes. Meld streams audio through YouTube Music's infrastructure like any other music player. It works with any audio output device including Bluetooth headphones, AirPods, car stereos, and speakers.
+Yes. Sleep streams audio through YouTube Music's infrastructure like any other music player. It works with any audio output device including Bluetooth headphones, AirPods, car stereos, and speakers.
 
-### Q: Why isn't Meld showing in Android Auto?
+### Q: Why isn't Sleep showing in Android Auto?
 
 1. Go to Android Auto's settings and tap multiple times on the version in the bottom to enable developer settings
 2. In the three dots menu at the top-right of the screen, click "Developer settings"
@@ -183,7 +183,7 @@ Yes. Meld streams audio through YouTube Music's infrastructure like any other mu
 
 ### Q: Do I need Spotify Premium?
 
-No. Meld uses Spotify for data only (your library, top tracks, search results) — not for audio streaming. Audio is streamed through YouTube Music. A free Spotify account works perfectly.
+No. Sleep uses Spotify for data only (your library, top tracks, search results) — not for audio streaming. Audio is streamed through YouTube Music. A free Spotify account works perfectly.
 
 ### Q: Some songs won't play — I get a playback error
 
@@ -214,7 +214,7 @@ You can also access "Change YouTube version" from the three-dot context menu of 
 
 ### Q: How does Qobuz lossless playback work?
 
-When enabled, Meld looks up each track on Qobuz and streams the FLAC file directly. Spotify-sourced tracks are matched via ISRC (the universal track identifier) for an exact match; YouTube-native tracks fall back to fuzzy title/artist matching. If the track isn't on Qobuz, or all backend resolvers are temporarily down, playback falls back silently to the standard YouTube Music stream.
+When enabled, Sleep looks up each track on Qobuz and streams the FLAC file directly. Spotify-sourced tracks are matched via ISRC (the universal track identifier) for an exact match; YouTube-native tracks fall back to fuzzy title/artist matching. If the track isn't on Qobuz, or all backend resolvers are temporarily down, playback falls back silently to the standard YouTube Music stream.
 
 The Qobuz resolvers are run by independent community projects — they're not affiliated with us. They can go down or get rate-limited at any time. When that happens, the fallback to YouTube Music is automatic and instant, but you may notice a delay on the first attempt while the failed resolvers are skipped.
 
@@ -222,15 +222,15 @@ Also note that FLAC streams use 3–10× more data than the standard AAC. Hi-Res
 
 ### Q: Why did some songs play in lossless and others didn't?
 
-Not every track exists on Qobuz, and not every track exists at every quality tier. If Qobuz returns only a preview (no full stream available) or all resolvers fail, Meld falls back to YouTube Music silently and remembers the result. Less popular tracks, indie releases, and rare regional versions are the most common cases. The fallback is the intended behavior and the audio will keep playing — just not in FLAC for that specific track.
+Not every track exists on Qobuz, and not every track exists at every quality tier. If Qobuz returns only a preview (no full stream available) or all resolvers fail, Sleep falls back to YouTube Music silently and remembers the result. Less popular tracks, indie releases, and rare regional versions are the most common cases. The fallback is the intended behavior and the audio will keep playing — just not in FLAC for that specific track.
 
 ### Q: Can my Spotify or YouTube account get banned?
 
-**Spotify:** Meld uses Spotify's APIs in read-only mode to access your library, playlists, and recommendations. It does **not** stream audio from Spotify, generate artificial plays, or modify your account data. While using unofficial API clients technically falls outside Spotify's Terms of Service, the risk of account action is considered low — similar apps have operated for years without widespread bans. That said, **use Meld at your own risk** and consider using a secondary Spotify account if you're concerned.
+**Spotify:** Sleep uses Spotify's APIs in read-only mode to access your library, playlists, and recommendations. It does **not** stream audio from Spotify, generate artificial plays, or modify your account data. While using unofficial API clients technically falls outside Spotify's Terms of Service, the risk of account action is considered low — similar apps have operated for years without widespread bans. That said, **use Sleep at your own risk** and consider using a secondary Spotify account if you're concerned.
 
 **YouTube/Google:** Audio is streamed through YouTube Music's infrastructure using the InnerTube API. Google has historically been more aggressive with unofficial clients. To minimize risk:
-- Avoid logging into your Google account in Meld unless needed for age-restricted content
-- Using Meld without a Google login carries minimal risk to your Google account
+- Avoid logging into your Google account in Sleep unless needed for age-restricted content
+- Using Sleep without a Google login carries minimal risk to your Google account
 - If you do log in, be aware this carries a small but nonzero risk
 
 **Bottom line:** No bans have been reported by Sleep users to date. However, as with any third-party client, we cannot guarantee that platform policies won't change in the future.
