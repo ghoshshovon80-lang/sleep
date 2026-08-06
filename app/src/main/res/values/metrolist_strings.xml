@@ -239,7 +239,7 @@
     <string name="release_notes">Release notes</string>
     <string name="changelog">Changelog</string>
     <string name="changelog_empty">No changelogs available</string>
-    <string name="github_releases_url">https://github.com/ghoshshovon80/Sleep/releases</string>
+    <string name="github_releases_url">https://github.com/ghoshshovon80-lang/sleep/releases</string>
     <string name="list_bullet">•</string>
     <string name="view_on_github">View on GitHub</string>
     <string name="current_version">Current version</string>

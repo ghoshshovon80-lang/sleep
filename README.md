@@ -3,9 +3,9 @@
 <h1>Sleep</h1>
 <p>A dark, premium Android music client fusing Spotify and YouTube Music into one seamless experience</p>
 
-[![Latest release](https://img.shields.io/github/v/release/ghoshshovon80/Sleep?style=for-the-badge)](https://github.com/ghoshshovon80/Sleep/releases/latest)
-[![GitHub license](https://img.shields.io/github/license/ghoshshovon80/Sleep?style=for-the-badge)](https://github.com/ghoshshovon80/Sleep/blob/main/LICENSE)
-[![Downloads](https://img.shields.io/github/downloads/ghoshshovon80/Sleep/total?style=for-the-badge)](https://github.com/ghoshshovon80/Sleep/releases)
+[![Latest release](https://img.shields.io/github/v/release/ghoshshovon80-lang/sleep?style=for-the-badge)](https://github.com/ghoshshovon80-lang/sleep/releases/latest)
+[![GitHub license](https://img.shields.io/github/license/ghoshshovon80-lang/sleep?style=for-the-badge)](https://github.com/ghoshshovon80-lang/sleep/blob/main/LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/ghoshshovon80-lang/sleep/total?style=for-the-badge)](https://github.com/ghoshshovon80-lang/sleep/releases)
 
 </div>
 
@@ -72,10 +72,10 @@ The name "Meld" reflects the core idea: **melding** two music platforms into a s
 ## Download
 
 <div align="center">
-<a href="https://github.com/ghoshshovon80/Sleep/releases/latest/download/Sleep.apk"><img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="82"></a>
+<a href="https://github.com/ghoshshovon80-lang/sleep/releases/latest/download/Sleep.apk"><img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="82"></a>
 </div>
 
-> **First time here?** Tap the badge above or go to the [Releases page](https://github.com/ghoshshovon80/Sleep/releases), then download the **Sleep.apk** file and open it on your Android device. You may need to allow installation from unknown sources in your phone's settings.
+> **First time here?** Tap the badge above or go to the [Releases page](https://github.com/ghoshshovon80-lang/sleep/releases), then download the **Sleep.apk** file and open it on your Android device. You may need to allow installation from unknown sources in your phone's settings.
 
 <div align="center">
 
@@ -237,7 +237,7 @@ Not every track exists on Qobuz, and not every track exists at every quality tie
 
 ## Author & Maintainer
 
-**Sleep** is developed and maintained by [Gourab Ghosh](https://github.com/ghoshshovon80).
+**Sleep** is developed and maintained by [Gourab Ghosh](https://github.com/ghoshshovon80-lang).
 
 ### Open Source Libraries & Technologies
 

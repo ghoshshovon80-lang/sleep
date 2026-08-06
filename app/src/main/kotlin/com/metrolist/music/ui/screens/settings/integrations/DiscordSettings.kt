@@ -962,7 +962,7 @@ fun RichPresence(
                         val intent =
                             Intent(
                                 Intent.ACTION_VIEW,
-                                "https://github.com/ghoshshovon80/Sleep".toUri(),
+                                "https://github.com/ghoshshovon80-lang/sleep".toUri(),
                             )
                         context.startActivity(intent)
                     },

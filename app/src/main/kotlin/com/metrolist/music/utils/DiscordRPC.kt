@@ -62,7 +62,7 @@ class DiscordRPC(
                 button2Text.ifEmpty { "Visit Sleep" },
                 song
             )
-            buttonsList.add(resolvedText to "https://github.com/ghoshshovon80/Sleep")
+            buttonsList.add(resolvedText to "https://github.com/ghoshshovon80-lang/sleep")
         }
 
         val type = when (activityType) {

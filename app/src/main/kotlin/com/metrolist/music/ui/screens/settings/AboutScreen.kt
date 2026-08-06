@@ -100,7 +100,7 @@ private data class CommunityLink(
 private val sleepDeveloper = Contributor(
     name = "Gourab Ghosh",
     roleRes = R.string.credits_developer,
-    githubHandle = "ghoshshovon80",
+    githubHandle = "ghoshshovon80-lang",
 )
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -120,8 +120,8 @@ private val upstreamCollaborators = listOf(
 
 private val communityLinks = listOf(
     CommunityLink(R.string.credits_discord, R.drawable.discord, "https://discord.gg/sAErRUVbsK"),
-    CommunityLink(R.string.credits_view_repo, R.drawable.github, "https://github.com/ghoshshovon80/Sleep"),
-    CommunityLink(R.string.credits_license_name, R.drawable.info, "https://github.com/ghoshshovon80/Sleep/blob/main/LICENSE")
+    CommunityLink(R.string.credits_view_repo, R.drawable.github, "https://github.com/ghoshshovon80-lang/sleep"),
+    CommunityLink(R.string.credits_license_name, R.drawable.info, "https://github.com/ghoshshovon80-lang/sleep/blob/main/LICENSE")
 )
 
 private fun handleEasterEggClick(
