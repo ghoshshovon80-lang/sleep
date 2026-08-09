@@ -124,10 +124,14 @@ class MusicRecognizerWidgetReceiver : AppWidgetProvider() {
         val serviceIntent = Intent(context, MusicRecognizerWidgetService::class.java).apply {
             action = MusicRecognizerWidgetService.ACTION_START_RECOGNITION
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(serviceIntent)
-        } else {
-            context.startService(serviceIntent)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(serviceIntent)
+            } else {
+                context.startService(serviceIntent)
+            }
+        } catch (e: Exception) {
+            android.util.Log.w("MusicRecognizerWidgetReceiver", "Failed to start recognition foreground service", e)
         }
     }
 

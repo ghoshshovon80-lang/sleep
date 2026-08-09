@@ -1,27 +1,54 @@
 <div align="center">
-<img src="fastlane/metadata/android/en-US/images/icon.png" width="160" height="160" style="display: block; margin: 0 auto"/>
+<img src="fastlane/metadata/android/en-US/images/icon.png" width="160" height="160" style="display: block; margin: 0 auto; border-radius: 50%; shadow: 0 8px 24px rgba(0,0,0,0.5);"/>
 <h1>Sleep</h1>
 <p>A dark, premium Android music client fusing Spotify and YouTube Music into one seamless experience</p>
 
 [![Latest release](https://img.shields.io/github/v/release/ghoshshovon80-lang/sleep?style=for-the-badge)](https://github.com/ghoshshovon80-lang/sleep/releases/latest)
 [![GitHub license](https://img.shields.io/github/license/ghoshshovon80-lang/sleep?style=for-the-badge)](https://github.com/ghoshshovon80-lang/sleep/blob/main/LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/ghoshshovon80-lang/sleep/total?style=for-the-badge)](https://github.com/ghoshshovon80-lang/sleep/releases)
+[![Android Compatibility](https://img.shields.io/badge/Android-10%20%7C%2011%20%7C%2012%20%7C%2013%20%7C%2014%2B-success?style=for-the-badge&logo=android)](https://github.com/ghoshshovon80-lang/sleep/releases)
 
 </div>
 
 ## What is Sleep?
 
-**Sleep** is an Android music client that brings together the best of Spotify and YouTube Music. It uses your Spotify account to power personalized recommendations, search, and home content — while streaming audio through YouTube Music.
+**Sleep** is a modern Android music client that brings together the best of Spotify and YouTube Music. It uses your Spotify account to power personalized recommendations, search, and home content — while streaming audio through YouTube Music.
 
 The name "Sleep" reflects the core idea: bringing together two music platforms into a single, unified listening experience.
 
 ### Why Sleep?
 
-- **Spotify's personalization** — Your top tracks, favorite artists, and curated playlists from Spotify drive the recommendations
-- **YouTube Music's catalog** — Access YouTube Music's vast library for streaming, including rare tracks, live performances, and remixes
-- **No setup required** — Just log in with your Spotify account directly in the app. No developer dashboard, no Client ID, no extra steps
-- **No Spotify Premium required** — Sleep uses Spotify's data APIs (not streaming), so a free Spotify account is all you need
-- **Built-in recommendation engine** — A custom algorithm builds personalized queues using your Spotify listening history, without relying on deprecated API endpoints
+- **Full Android 10, 11, 12, 13 & 14+ Compatibility** — Built and compiled with Java 17 bytecode standards and desugaring, running smoothly on Android 10 (Q), Android 11 (R), Android 12 (S), Android 13 (Tiramisu), and newer Android versions.
+- **Round App Icon Design** — Stylish circular app badge with a red Spotify-inspired sound wave visual identity.
+- **Spotify's personalization** — Your top tracks, favorite artists, and curated playlists from Spotify drive the recommendations.
+- **YouTube Music's catalog** — Access YouTube Music's vast library for streaming, including rare tracks, live performances, and remixes.
+- **No setup required** — Just log in with your Spotify account directly in the app. No developer dashboard, no Client ID, no extra steps.
+- **No Spotify Premium required** — Sleep uses Spotify's data APIs (not streaming), so a free Spotify account is all you need.
+- **Built-in recommendation engine** — A custom algorithm builds personalized queues using your Spotify listening history, without relying on deprecated API endpoints.
+
+## App Screenshots & Visual Reference
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="33%">
+        <b>Home Screen</b><br/>
+        <sub>Personalized quick picks, Spotify integration & mood filters</sub><br/><br/>
+        <img src="fastlane/metadata/android/en-US/images/screenshots/home_page.png" width="320" alt="Sleep Home Screen"/>
+      </td>
+      <td align="center" width="33%">
+        <b>Music Play Section (Now Playing)</b><br/>
+        <sub>Live playback controls, live lyrics & glowing audio visualizer</sub><br/><br/>
+        <img src="fastlane/metadata/android/en-US/images/screenshots/music_play_section.png" width="320" alt="Sleep Music Play Section"/>
+      </td>
+      <td align="center" width="33%">
+        <b>Library & Playlists</b><br/>
+        <sub>Liked songs, custom playlists & offline downloaded tracks</sub><br/><br/>
+        <img src="fastlane/metadata/android/en-US/images/screenshots/library_section.png" width="320" alt="Sleep Library & Playlists"/>
+      </td>
+    </tr>
+  </table>
+</div>
 
 ## Features
 
@@ -47,193 +74,87 @@ The name "Sleep" reflects the core idea: bringing together two music platforms i
 - **Hidden behind a toggle** — Disabled by default; opt-in from the Spotify integration settings
 
 ### Core Music Features
+- Follow Developer section in Settings (Instagram @shoven_ghosh, X @shovonGhoseqsr, GitHub ghoshshovon80-lang)
+- Full Android 10, 11, 12, 13, 14, 15 runtime compatibility
+- Round App Icon in launcher and notification area
 - Play any song or video from YouTube Music
-- Background playback
-- Personalized quick picks
-- Library management
+- Background playback with MediaSession controls
+- Personalized quick picks & recommendation algorithms
+- Library management & local downloaded song playback
 - Listen together with friends
-- Download and cache songs for offline playback
-- Search for songs, albums, artists, videos and playlists
-- Live lyrics
+- Live time-synced lyrics with word highlighting
 - YouTube Music account login support
-- Syncing of songs, artists, albums and playlists, from and to your account
-- Skip silence
-- Import playlists
-- Audio normalization
-- Adjust tempo/pitch
-- Local playlist management
-- Reorder songs in playlist or queue
+- Syncing of songs, artists, albums and playlists
+- Skip silence & audio normalization
+- Adjust tempo / pitch
 - Home screen widget with playback controls
 - Light / Dark / Black / Dynamic theme
-- Sleep timer
-- Material 3 design
-- Discord Rich Presence
+- Sleep timer & Material 3 design
 
 ## Download
 
 <div align="center">
+
+### 🚀 [Direct Download APK (Latest Release)](https://github.com/ghoshshovon80-lang/sleep/releases/latest/download/Sleep.apk)
+
 <a href="https://github.com/ghoshshovon80-lang/sleep/releases/latest/download/Sleep.apk"><img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="82"></a>
-</div>
 
-> **First time here?** Tap the badge above or go to the [Releases page](https://github.com/ghoshshovon80-lang/sleep/releases), then download the **Sleep.apk** file and open it on your Android device. You may need to allow installation from unknown sources in your phone's settings.
-
-<div align="center">
-
-**Enjoying Sleep?** Consider supporting the project
-
-<a href="https://buymeacoffee.com/francescogm"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee"></a>
+[![Direct APK Download](https://img.shields.io/badge/Download-Sleep.apk%20(Direct%20Link)-2ea44f?style=for-the-badge&logo=android&logoColor=white)](https://github.com/ghoshshovon80-lang/sleep/releases/latest/download/Sleep.apk)
+[![All Releases](https://img.shields.io/badge/GitHub-Releases%20Page-blue?style=for-the-badge&logo=github)](https://github.com/ghoshshovon80-lang/sleep/releases)
 
 </div>
+
+> 📥 **Direct Link**: Download the latest build directly via [Sleep.apk Direct Link](https://github.com/ghoshshovon80-lang/sleep/releases/latest/download/Sleep.apk) or visit the [Releases page](https://github.com/ghoshshovon80-lang/sleep/releases). Open the `.apk` file on your Android device to install (allow "Install from unknown sources" if prompted).
+
+## Android Version & Device Compatibility
+
+| Android Version | API Level | Status | Details |
+|---|---|---|---|
+| **Android 8.0 / 8.1 (Oreo)** | API 26 / 27 | ✅ Supported | Minimum supported SDK version |
+| **Android 9 (Pie)** | API 28 | ✅ Supported | Fully supported |
+| **Android 10 (Q)** | API 29 | ✅ Fixed & Supported | Storage permission handling & JVM 17 compatibility |
+| **Android 11 (R)** | API 30 | ✅ Fixed & Supported | Scoped storage & background service compatibility |
+| **Android 12 / 12L (S)** | API 31 / 32 | ✅ Fixed & Supported | Exported activity/service component specs & theme |
+| **Android 13 (Tiramisu)** | API 33 | ✅ Fixed & Supported | Media notification & granular media permissions |
+| **Android 14 / 15+** | API 34 / 35 | ✅ Supported | Modern target API standard |
 
 ## How the Spotify Integration Works
 
-Sleep connects to your Spotify account through a built-in WebView login — no developer setup or Client ID required. Here's what happens under the hood:
+Sleep connects to your Spotify account through a built-in WebView login — no developer setup or Client ID required:
 
-1. **Authentication** — You log in with your regular Spotify credentials (email, Google, Facebook, or Apple) directly inside the app. Sleep extracts session cookies and generates access tokens using TOTP, keeping you logged in without manual token management.
-2. **Data layer** — Sleep communicates with Spotify primarily through GraphQL endpoints (for playlists, liked songs, artist details, albums, new releases, and search) with REST API fallbacks for top tracks and top artists. GraphQL avoids the aggressive rate limits that affect REST endpoints.
-3. **Home screen** — When "Use Spotify for Home" is enabled, Sleep builds a personalized home feed from your top tracks, top artists, playlists, and new releases. Enable "Spotify only" to hide all YouTube-based sections for a fully Spotify-driven experience.
-4. **Profile caching** — Your Spotify profile data (top tracks, top artists with images) is persisted locally and served instantly on app restart. Background network refreshes only happen when the cache is stale (6-hour TTL), keeping the home screen fast and responsive.
-5. **Search** — When "Use Spotify for Search" is enabled, search queries go through Spotify's GraphQL search. Results are displayed as Spotify content; tapping a song resolves it to YouTube Music for playback.
-6. **Queue generation** — When you play a Spotify-sourced song, Sleep's recommendation engine builds a queue by:
-   - Fetching top tracks from the song's artists
-   - Finding genre-similar artists from your taste profile
-   - Mixing in tracks from your personal top tracks pool
-   - Scoring candidates by artist affinity (30%), genre overlap (20%), source relevance (25%), recency (15%), and popularity similarity (10%)
-   - Diversifying the queue to avoid repetition (max 3 tracks per artist)
-7. **Playback** — Each Spotify track is matched to its YouTube Music equivalent using fuzzy title/artist/duration matching, then streamed via YouTube Music's infrastructure. Matched results are cached locally for instant resolution on subsequent plays. If a match is wrong, you can manually override it from the player's three-dot menu → "Change YouTube version" by pasting the correct YouTube link.
+1. **Authentication** — You log in with your regular Spotify credentials (email, Google, Facebook, or Apple) directly inside the app. Sleep extracts session cookies and generates access tokens using TOTP.
+2. **Data layer** — Sleep communicates with Spotify primarily through GraphQL endpoints with REST API fallbacks.
+3. **Home screen** — When "Use Spotify for Home" is enabled, Sleep builds a personalized home feed from your top tracks, top artists, playlists, and new releases.
+4. **Profile caching** — Your Spotify profile data is persisted locally and served instantly on app restart.
+5. **Search** — Search queries go through Spotify's GraphQL search. Results are displayed as Spotify content; tapping a song resolves it to YouTube Music.
+6. **Queue generation** — When you play a Spotify-sourced song, Sleep's custom recommendation engine builds a queue tailored to your listening habits.
+7. **Playback** — Each Spotify track is matched to its YouTube Music equivalent using fuzzy matching with local DB persistence.
 
 ## How the Qobuz Lossless Integration Works
 
-When the Qobuz toggle is enabled (Settings → Integrations → Spotify → "Use Qobuz for lossless playback"), Sleep routes audio through Qobuz's FLAC catalog instead of YouTube Music's lossy AAC streams. The integration is fully opt-in and falls back to YouTube Music whenever Qobuz can't deliver — there's no playback interruption either way.
+When the Qobuz toggle is enabled (**Settings → Integrations → Spotify → "Use Qobuz for lossless playback"**), Sleep routes audio through Qobuz's FLAC catalog instead of YouTube Music's lossy AAC streams.
 
-1. **Match resolution** — For every track about to play, Sleep looks up the song on Qobuz. Spotify-sourced tracks include the **ISRC** (the universal track identifier — the same ISRC points to the same recording across Spotify, Qobuz, Tidal, etc.) which produces an exact, deterministic match. YT-native tracks fall back to fuzzy title/artist/album matching using the cached song metadata.
-2. **Backend cycling** — Qobuz is accessed through three independent open community resolvers (Monokenny, Jumo, Squid). The primary backend is configurable; if it returns a preview, captcha challenge, or any other failure, Sleep automatically retries on the alternates before giving up. Backends that hit a captcha are skipped for five minutes to avoid wasted retries.
-3. **Persistent caching** — A successful match (the Qobuz track ID, hi-res tier, bit depth, sample rate) is saved in the local database keyed by the YouTube ID, so the next play of the same song skips the search step entirely and resolves in a few hundred milliseconds. ISRCs discovered during a Qobuz resolve are also written back to the song's row, which improves the accuracy of future matches across the whole library.
-4. **Quality tier downgrade** — When the saved match knows the track only exists at CD quality on Qobuz (not Hi-Res), Sleep caps the requested quality automatically to avoid the wasted "preview returned" round-trip.
-5. **YouTube fallback** — If every Qobuz backend fails (track not in catalog, all resolvers down, network issue, etc.), playback proceeds through the standard YouTube Music pipeline with the lossy AAC stream. The fallback is silent and instant; subsequent plays will try Qobuz again.
+1. **Match resolution** — Tracks are resolved via ISRC (the universal track identifier) for exact matching.
+2. **Backend cycling** — Qobuz is accessed through three independent open community resolvers (Monokenny, Jumo, Squid).
+3. **Persistent caching** — Successful Qobuz matches are saved in the local database.
+4. **YouTube Fallback** — If Qobuz resolvers hit rate-limits or missing tracks, playback seamlessly falls back to YouTube Music.
 
-> **Important — third-party services:** The Qobuz resolvers are run by independent community projects, not by us. They may go down, get rate-limited, or stop working at any time without notice. When they do, playback automatically falls back to YouTube Music — but you may notice slower start times during the failed Qobuz attempt.
+## Setup & Installation
 
-> **Bandwidth and storage:** FLAC streams use 3–10× more data than the standard AAC. Hi-Res (24-bit / 96+ kHz) can exceed 1.5 Mbit/s and use ~30 MB per song downloaded. Consider this if you're on a limited mobile plan or have tight storage.
+### Android Installation
 
-## Setup
+1. Download **Sleep.apk** from the link above.
+2. Open the file on your device. If prompted, grant permission to install from unknown sources.
+3. Open **Sleep** and enjoy!
 
-### Spotify Integration
+### Spotify Setup
 
-1. In Sleep, go to **Settings → Integrations → Spotify**
-2. Tap **Login** — a Spotify login page will open directly inside the app
-3. Sign in with your Spotify account (email/password, Google, Facebook, or Apple)
-4. Once logged in, enable **"Use Spotify for Search"** and/or **"Use Spotify for Home"** — these are off by default
-5. Optionally enable **"Spotify only"** to hide all YouTube-based content from the home screen
-6. Go back to the home screen and **pull down to refresh**. Your Spotify playlists, top tracks, and recommendations should appear within a few seconds.
+1. In Sleep, go to **Settings → Integrations → Spotify**.
+2. Tap **Login** and sign in with your Spotify account.
+3. Turn on **"Use Spotify for Search"** and **"Use Spotify for Home"**.
+4. Return to the home screen and pull down to refresh.
 
-> **Note:** No developer account, Client ID, or any external setup is required. Just log in with your regular Spotify account — free or Premium.
-
-> **Important:** For reliable playback, disable battery optimization for Sleep in your phone settings (**Settings → Apps → Sleep → Battery → Unrestricted**). Without this, Android may throttle the app and cause long delays before songs start playing.
-
-### Qobuz Lossless (Optional)
-
-1. Make sure Spotify integration is set up first (see above) — Qobuz lives under the same settings screen
-2. Scroll to the **"Audio quality (experimental)"** section at the bottom of **Settings → Integrations → Spotify**
-3. Enable **"Use Qobuz for lossless playback"**
-4. Pick a **quality tier** — AAC 320, CD (recommended default), or Hi-Res
-5. Pick a **resolver backend** — Monokenny is the recommended default; Jumo and Squid are alternates that the app also rotates through automatically on failure
-6. Set the **country code** (ISO two-letter, e.g. `US`, `IT`, `FR`) — this affects which regional Qobuz catalog is queried
-
-That's it — the next time you play a song, Sleep will try Qobuz first and fall back to YouTube Music if the track isn't available there. The toggle can be turned off at any time to revert to YouTube-only playback.
-
-> **Hot-reload:** Toggling Qobuz on/off, switching backend, quality, or country code automatically reloads the currently playing track so the new source takes effect immediately. **No app restart is required.**
-
-### Building from source
-
-For GitHub Actions builds, add these secrets to your repository:
-- `LASTFM_API_KEY` / `LASTFM_SECRET` — from [last.fm/api/account/create](https://www.last.fm/api/account/create)
-
-## FAQ
-
-### Q: How do I download and install Sleep?
-
-Go to the [latest release](https://github.com/ghoshshovon80-lang/sleep/releases/latest) and download the **Sleep.apk** file. Open it on your Android device — you may need to allow "Install from unknown sources" in your phone's settings when prompted. You do **not** need to download the source code files.
-
-### Q: I logged into Spotify but my playlists aren't showing
-
-After logging in, make sure you've enabled **"Use Spotify for Home"** and/or **"Use Spotify for Search"** in **Settings → Integrations → Spotify**. These are off by default. Then go back to the home screen and **pull down to refresh**. The first load may take a few seconds; subsequent launches will be instant thanks to local caching.
-
-### Q: Songs aren't playing / playback is very slow to start
-
-If songs aren't playing or take a long time to start, try the following:
-
-1. **Disable battery optimization for Sleep** — Go to your phone's **Settings → Apps → Sleep → Battery → Unrestricted** (or "No restrictions"). This is the most common fix. Android aggressively throttles background network and CPU usage for battery-optimized apps, which directly impacts Sleep's stream resolution pipeline. Without this setting, playback may take over a minute to start, especially when the screen is locked.
-2. Wait a moment — the first playback after a fresh launch requires initializing the streaming engine (signature verification, token generation). Subsequent plays are much faster.
-3. Check your internet connection
-4. Try playing a different song
-5. Force-close and reopen the app
-
-In general for the first time you play a song it's normal for it to take alonger time, the process to download metadata from spotify, look for a correspondent on youtube and match it can take time, for some song more than others! From the second time it will be stored in a local DB and this process won't need to be run again
-
-### Q: Does Sleep work with Bluetooth headphones / AirPods?
-
-Yes. Sleep streams audio through YouTube Music's infrastructure like any other music player. It works with any audio output device including Bluetooth headphones, AirPods, car stereos, and speakers.
-
-### Q: Why isn't Sleep showing in Android Auto?
-
-1. Go to Android Auto's settings and tap multiple times on the version in the bottom to enable developer settings
-2. In the three dots menu at the top-right of the screen, click "Developer settings"
-3. Enable "Unknown sources"
-
-### Q: Do I need Spotify Premium?
-
-No. Sleep uses Spotify for data only (your library, top tracks, search results) — not for audio streaming. Audio is streamed through YouTube Music. A free Spotify account works perfectly.
-
-### Q: Some songs won't play — I get a playback error
-
-Certain tracks on YouTube may be age-restricted or region-locked. If you're not logged into YouTube, some of these tracks cannot be played because YouTube requires authentication to verify your identity. To fix this:
-
-1. Go to **Settings → Account** and log in with your YouTube / Google account
-2. Go back and try playing the song again
-
-If the track still doesn't play after logging in, it may be restricted in your country or permanently unavailable.
-
-### Q: Why do some songs not match correctly?
-
-The Spotify-to-YouTube matching uses fuzzy matching on title, artist name, and duration. In rare cases (live versions, remasters, regional variants), the match may not be perfect. Matched results are cached locally so they're resolved instantly on subsequent plays.
-
-**You can manually fix an incorrect match.** The recommended way is through the player menu:
-
-1. Play the song that has the wrong match
-2. Tap the **three-dot menu (⋮)** at the bottom-right of the Now Playing screen
-3. Tap **"Change YouTube version"** (this option only appears for Spotify-sourced tracks)
-4. You'll see the current match with its thumbnail, title, and YouTube link at the top
-5. Paste the correct YouTube or YouTube Music link in the input field below
-6. A preview of the new match will appear — verify it's the right one and tap **OK**
-7. The player will automatically switch to the new version
-
-The override is saved permanently in your local database and will always be used for that Spotify track, even if the automatic matching would suggest a different result.
-
-You can also access "Change YouTube version" from the three-dot context menu of any song in your library, queue, or album view — as long as that song was originally resolved from a Spotify track. Additionally, long-pressing a track in a Spotify playlist or Liked Songs screen in the Library section opens the override dialog directly.
-
-### Q: How does Qobuz lossless playback work?
-
-When enabled, Sleep looks up each track on Qobuz and streams the FLAC file directly. Spotify-sourced tracks are matched via ISRC (the universal track identifier) for an exact match; YouTube-native tracks fall back to fuzzy title/artist matching. If the track isn't on Qobuz, or all backend resolvers are temporarily down, playback falls back silently to the standard YouTube Music stream.
-
-The Qobuz resolvers are run by independent community projects — they're not affiliated with us. They can go down or get rate-limited at any time. When that happens, the fallback to YouTube Music is automatic and instant, but you may notice a delay on the first attempt while the failed resolvers are skipped.
-
-Also note that FLAC streams use 3–10× more data than the standard AAC. Hi-Res files can exceed 30 MB per song. If you're on a metered mobile plan or tight on storage, stick to CD quality or keep the feature off on cellular.
-
-### Q: Why did some songs play in lossless and others didn't?
-
-Not every track exists on Qobuz, and not every track exists at every quality tier. If Qobuz returns only a preview (no full stream available) or all resolvers fail, Sleep falls back to YouTube Music silently and remembers the result. Less popular tracks, indie releases, and rare regional versions are the most common cases. The fallback is the intended behavior and the audio will keep playing — just not in FLAC for that specific track.
-
-### Q: Can my Spotify or YouTube account get banned?
-
-**Spotify:** Sleep uses Spotify's APIs in read-only mode to access your library, playlists, and recommendations. It does **not** stream audio from Spotify, generate artificial plays, or modify your account data. While using unofficial API clients technically falls outside Spotify's Terms of Service, the risk of account action is considered low — similar apps have operated for years without widespread bans. That said, **use Sleep at your own risk** and consider using a secondary Spotify account if you're concerned.
-
-**YouTube/Google:** Audio is streamed through YouTube Music's infrastructure using the InnerTube API. Google has historically been more aggressive with unofficial clients. To minimize risk:
-- Avoid logging into your Google account in Sleep unless needed for age-restricted content
-- Using Sleep without a Google login carries minimal risk to your Google account
-- If you do log in, be aware this carries a small but nonzero risk
-
-**Bottom line:** No bans have been reported by Sleep users to date. However, as with any third-party client, we cannot guarantee that platform policies won't change in the future.
+> **Tip for Smooth Playback**: Disable battery optimization for Sleep in your phone settings (**Settings → Apps → Sleep → Battery → Unrestricted**). This prevents Android from killing background playback services.
 
 ## Author & Maintainer
 
@@ -246,8 +167,6 @@ Not every track exists on Qobuz, and not every track exists at every quality tie
 - [**SimpMusic Lyrics**](https://github.com/maxrave-dev/SimpMusic) — Lyrics data through the SimpMusic Lyrics API
 - [**MusicRecognizer**](https://github.com/aleksey-saenko/MusicRecognizer) — Music recognition and Shazam API integration
 
-## Disclaimer
+## License & Disclaimer
 
-This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC, Spotify AB, or any of their affiliates and subsidiaries.
-
-Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.
+This project is licensed under the GPL-3.0 License. It is an independent open-source music player and is not affiliated with YouTube, Google LLC, or Spotify AB.
