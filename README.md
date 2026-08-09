@@ -1,5 +1,5 @@
 <div align="center">
-<img src="fastlane/metadata/android/en-US/images/icon.png" width="160" height="160" style="display: block; margin: 0 auto; border-radius: 50%; shadow: 0 8px 24px rgba(0,0,0,0.5);"/>
+<img src="fastlane/metadata/android/en-US/images/icon.png" width="160" height="160" style="display: block; margin: 0 auto; border-radius: 24px; shadow: 0 8px 24px rgba(0,0,0,0.5);"/>
 <h1>Sleep</h1>
 <p>A dark, premium Android music client fusing Spotify and YouTube Music into one seamless experience</p>
 
