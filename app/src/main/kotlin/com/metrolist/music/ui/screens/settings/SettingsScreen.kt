@@ -74,6 +74,54 @@ fun SettingsScreen(
             )
         )
 
+        // Follow Developer Section
+        Material3SettingsGroup(
+            title = stringResource(R.string.follow_developer),
+            items = listOf(
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.instagram),
+                    title = { Text(stringResource(R.string.instagram)) },
+                    description = { Text("@shoven_ghosh") },
+                    trailingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.navigate_next),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    },
+                    onClick = { uriHandler.openUri("https://www.instagram.com/shoven_ghosh?igsh=NGs4cWgyb3JzOWlk") }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.x_twitter),
+                    title = { Text(stringResource(R.string.x_twitter)) },
+                    description = { Text("@shovonGhoseqsr") },
+                    trailingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.navigate_next),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    },
+                    onClick = { uriHandler.openUri("https://x.com/shovonGhoseqsr") }
+                ),
+                Material3SettingsItem(
+                    icon = painterResource(R.drawable.github),
+                    title = { Text(stringResource(R.string.github)) },
+                    description = { Text("ghoshshovon80-lang") },
+                    trailingContent = {
+                        Icon(
+                            painter = painterResource(R.drawable.navigate_next),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    },
+                    onClick = { uriHandler.openUri("https://github.com/ghoshshovon80-lang") }
+                )
+            )
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         // User Interface Section
         Material3SettingsGroup(
             title = stringResource(R.string.settings_section_ui),

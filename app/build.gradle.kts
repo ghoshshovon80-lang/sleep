@@ -31,10 +31,10 @@ android {
 
     defaultConfig {
         applicationId = applicationIdOverride ?: "com.yourdomain.sleep"
-        minSdk = 34
+        minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = 3
+        versionName = "1.0.2"
         resValue("string", "app_name", appNameOverride ?: "Sleep")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -131,7 +131,7 @@ android {
             }
             isDebuggable = true
             if (appNameOverride == null) {
-                resValue("string", "app_name", "Sleep Debug")
+                resValue("string", "app_name", "Sleep")
             }
             signingConfig =
                 if (workflowDebugKeystoreFile != null) {

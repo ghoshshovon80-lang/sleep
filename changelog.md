@@ -1,3 +1,11 @@
+---v1.0.2
+# Sleep v1.0.2 Release
+
+- Added "Follow Developer" section in Settings screen with Instagram (@shoven_ghosh), X/Twitter (@shovonGhoseqsr), and GitHub (ghoshshovon80-lang) links
+- Updated brand assets, icons, and vectors for Sleep identity
+- Broadened Android device compatibility (`minSdk = 26`)
+- Automated GitHub Actions release deployment with signed APKs
+
 ---v1.0.1
 # Sleep v1.0.1 Release
 
