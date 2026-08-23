@@ -156,7 +156,6 @@ import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.constants.SimilarContent
 import com.metrolist.music.constants.SkipSilenceInstantKey
 import com.metrolist.music.constants.SkipSilenceKey
-import com.metrolist.music.constants.StopMusicOnTaskClearKey
 import com.metrolist.music.db.MusicDatabase
 import com.metrolist.music.db.entities.Event
 import com.metrolist.music.db.entities.FormatEntity
@@ -234,7 +233,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.TimeoutCancellationException
-import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
