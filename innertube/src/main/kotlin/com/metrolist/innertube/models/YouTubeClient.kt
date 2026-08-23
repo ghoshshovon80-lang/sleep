@@ -109,11 +109,32 @@ data class YouTubeClient(
             osVersion = "18.2.22C152",
         )
 
+        val ANDROID_TESTSUITE = YouTubeClient(
+            clientName = "ANDROID_TESTSUITE",
+            clientVersion = "1.9",
+            clientId = "30",
+            userAgent = "com.google.android.youtube/19.29.37 (Linux; U; Android 14; en_US)",
+            osName = "Android",
+            osVersion = "14",
+            deviceMake = "Google",
+            deviceModel = "Pixel 8",
+            androidSdkVersion = "34",
+            friendlyName = "Android TestSuite",
+            loginSupported = false,
+            useSignatureTimestamp = false
+        )
+
         val MOBILE = YouTubeClient(
             clientName = "ANDROID",
-            clientVersion = "21.03.38",
+            clientVersion = "19.29.37",
             clientId = "3",
-            userAgent = "com.google.android.youtube/21.03.38 (Linux; U; Android 14) gzip",
+            userAgent = "com.google.android.youtube/19.29.37 (Linux; U; Android 14; en_US)",
+            osName = "Android",
+            osVersion = "14",
+            deviceMake = "Google",
+            deviceModel = "Pixel 8",
+            androidSdkVersion = "34",
+            friendlyName = "Android",
             loginSupported = true,
             useSignatureTimestamp = true
         )
@@ -125,9 +146,9 @@ data class YouTubeClient(
          */
         val ANDROID_NO_SDK = YouTubeClient(
             clientName = "ANDROID",
-            clientVersion = "21.03.38",
+            clientVersion = "19.29.37",
             clientId = "3",
-            userAgent = "com.google.android.youtube/21.03.38 (Linux; U; Android 14) gzip",
+            userAgent = "com.google.android.youtube/19.29.37 (Linux; U; Android 14; en_US)",
             friendlyName = "Android No SDK",
             loginSupported = false,
             useSignatureTimestamp = false
@@ -163,6 +184,8 @@ data class YouTubeClient(
             loginSupported = false,
             useSignatureTimestamp = false
         )
+
+        val ANDROID_VR = ANDROID_VR_1_61_48
 
         /**
          * Uses non adaptive bitrate, which fixes audio stuttering with YT Music.

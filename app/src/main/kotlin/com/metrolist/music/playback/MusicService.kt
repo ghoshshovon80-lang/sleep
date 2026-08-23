@@ -2599,11 +2599,14 @@ class MusicService :
 
     /**
      * Checks if the error is caused by an expired/forbidden URL (HTTP 403).
-     * This typically happens when a YouTube stream URL expires.
+     * This typically happens when a YouTube stream URL expires or CDN blocks request.
      */
     private fun isExpiredUrlError(error: PlaybackException): Boolean {
         val responseCode = getHttpResponseCode(error)
-        return responseCode == 403
+        if (responseCode == 403) return true
+        val errorMessage = error.message?.lowercase() ?: ""
+        val causeMessage = error.cause?.message?.lowercase() ?: ""
+        return errorMessage.contains("403") || causeMessage.contains("403")
     }
 
     /**
@@ -3366,11 +3369,16 @@ class MusicService :
             .followSslRedirects(true)
             .addInterceptor { chain ->
                 val originalRequest = chain.request()
+                val requestUrl = originalRequest.url.toString()
                 val requestBuilder = originalRequest.newBuilder()
-                    .header("User-Agent", "com.google.android.apps.youtube.music/6.42.52 (Linux; U; Android 14; gms)")
+                    .header("User-Agent", "com.google.android.youtube/19.29.37 (Linux; U; Android 14; en_US)")
                     .header("Connection", "keep-alive")
                 if (originalRequest.header("Range") == null) {
                     requestBuilder.header("Range", "bytes=0-")
+                }
+                if (requestUrl.contains("googlevideo.com")) {
+                    requestBuilder.removeHeader("Cookie")
+                    requestBuilder.removeHeader("Authorization")
                 }
                 chain.proceed(requestBuilder.build())
             }

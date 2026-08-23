@@ -13,6 +13,8 @@ import com.metrolist.innertube.NewPipeExtractor
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.YouTubeClient
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_CREATOR
+import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_TESTSUITE
+import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_1_43_32
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_1_61_48
 import com.metrolist.innertube.models.YouTubeClient.Companion.ANDROID_VR_NO_AUTH
@@ -35,6 +37,7 @@ import com.metrolist.music.utils.potoken.PoTokenResult
 import com.metrolist.music.utils.sabr.EjsNTransformSolver
 import okhttp3.OkHttpClient
 import timber.log.Timber
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 object YTPlayerUtils {
@@ -54,30 +57,31 @@ object YTPlayerUtils {
     private val MAIN_CLIENT: YouTubeClient = WEB_REMIX
 
     private val STREAM_FALLBACK_CLIENTS: Array<YouTubeClient> = arrayOf(
-        TVHTML5_SIMPLY_EMBEDDED_PLAYER,  // Try embedded player first for age-restricted content
-        TVHTML5,
-        ANDROID_VR_1_43_32,
         ANDROID_VR_1_61_48,
-        ANDROID_CREATOR,
-        IPADOS,
+        ANDROID_TESTSUITE,
+        ANDROID_VR_1_43_32,
         ANDROID_VR_NO_AUTH,
+        ANDROID_CREATOR,
         MOBILE,
+        IPADOS,
         IOS,
         WEB,
+        WEB_REMIX,
+        TVHTML5_SIMPLY_EMBEDDED_PLAYER,
+        TVHTML5,
         WEB_CREATOR
     )
+
+    private val videoFallbackOffsets = ConcurrentHashMap<String, Int>()
 
     /**
      * For normal content we skip the MAIN_CLIENT (WEB_REMIX) stream attempt and go
      * straight to this client. WEB_REMIX returns formats behind YouTube's signature
-     * cipher / n-challenge, which can no longer be solved client-side (even yt-dlp
-     * needs an external JS challenge solver for the current player). ANDROID_VR
-     * returns pre-signed URLs that need no deobfuscation, so starting here avoids a
-     * guaranteed-failing cipher attempt plus two unusable fallback clients (~3.5s).
-     * Metadata/history still come from the WEB_REMIX response fetched above.
+     * cipher / n-challenge, which can no longer be solved client-side. ANDROID_VR /
+     * ANDROID_TESTSUITE return pre-signed URLs that need no deobfuscation.
      */
     private val NORMAL_CONTENT_STREAM_START_INDEX: Int =
-        STREAM_FALLBACK_CLIENTS.indexOf(ANDROID_VR_1_43_32).takeIf { it >= 0 } ?: -1
+        STREAM_FALLBACK_CLIENTS.indexOf(ANDROID_VR_1_61_48).takeIf { it >= 0 } ?: 0
 
     data class PlaybackData(
         val audioConfig: PlayerResponse.PlayerConfig.AudioConfig?,
@@ -195,20 +199,25 @@ object YTPlayerUtils {
         // Check if this is a privately owned track (uploaded song)
         val isPrivateTrack = mainPlayerResponse.videoDetails?.musicVideoType == "MUSIC_VIDEO_TYPE_PRIVATELY_OWNED_TRACK"
 
-        // For private tracks: use TVHTML5 (index 1) with PoToken + n-transform
+        // For private tracks: use TVHTML5 with PoToken + n-transform
         // For age-restricted: skip main client, start with fallbacks
-        // For normal content: standard order
+        // For normal content: start with ANDROID_VR / ANDROID_TESTSUITE
+        val tvHtml5Index = STREAM_FALLBACK_CLIENTS.indexOf(TVHTML5).takeIf { it >= 0 } ?: 0
         val startIndex = when {
-            isPrivateTrack -> 1  // TVHTML5
+            isPrivateTrack -> tvHtml5Index
             isAgeRestricted -> 0
             skipMainClient -> 0  // MAIN_CLIENT streams unplayable without PoToken
-            // Normal content: skip the WEB_REMIX stream attempt (cipher unsolvable) and
-            // jump straight to ANDROID_VR, which serves pre-signed URLs. See
-            // NORMAL_CONTENT_STREAM_START_INDEX. Falls back to -1 if the client is absent.
             else -> NORMAL_CONTENT_STREAM_START_INDEX
         }
 
-        for (clientIndex in (startIndex until STREAM_FALLBACK_CLIENTS.size)) {
+        val fallbackOffset = videoFallbackOffsets[videoId] ?: 0
+        val effectiveStartIndex = if (isAgeRestricted || isPrivateTrack) {
+            startIndex
+        } else {
+            (startIndex + fallbackOffset).coerceAtMost(STREAM_FALLBACK_CLIENTS.size - 1)
+        }
+
+        for (clientIndex in (effectiveStartIndex until STREAM_FALLBACK_CLIENTS.size)) {
             // reset for each client
             format = null
             streamUrl = null
@@ -424,6 +433,7 @@ object YTPlayerUtils {
         if (isUploadedTrack) {
             println("[PLAYBACK_DEBUG] SUCCESS: Got playback data for uploaded track - format=${format.mimeType}, streamUrl=${streamUrl.take(100)}...")
         }
+        videoFallbackOffsets.remove(videoId)
         PlaybackData(
             audioConfig,
             videoDetails,
@@ -478,14 +488,11 @@ object YTPlayerUtils {
     /**
      * Checks if the stream url returns a successful status.
      *
-     * Why the leniency: on slow mobile networks HEAD can time out or be rejected by edge
-     * CDNs (405/403/410 on HEAD while GET works). If we treat those as "failed" we skip a
-     * stream that actually plays. Rules here:
+     * Rules here:
      *  - 2xx → valid
-     *  - 405/403/410 → treat as valid (HEAD may be restricted; ExoPlayer will GET)
-     *  - IOException (timeout/reset) → treat as valid; ExoPlayer has its own retry and
-     *    killing the client here just cascades us down the fallback chain for no reason
-     *  - other HTTP codes (4xx/5xx) → invalid
+     *  - 405 → treat as valid (HEAD may be restricted; ExoPlayer will GET)
+     *  - 403 / 410 / 4xx / 5xx → invalid (triggers fallback to next client)
+     *  - IOException (timeout/reset) → treat as valid optimistically
      */
     private fun validateStatus(url: String): Boolean {
         Timber.tag(logTag).d("Validating stream URL status")
@@ -493,15 +500,14 @@ object YTPlayerUtils {
             val requestBuilder = okhttp3.Request.Builder()
                 .head()
                 .url(url)
+                .header("User-Agent", "com.google.android.youtube/19.29.37 (Linux; U; Android 14; en_US)")
 
-            YouTube.cookie?.let { cookie ->
-                requestBuilder.addHeader("Cookie", cookie)
-            }
+            // Do NOT add Cookie or Authorization headers to googlevideo.com CDN streams
 
             val response = httpClient.newCall(requestBuilder.build()).execute()
             response.close()
             val code = response.code
-            val accepted = response.isSuccessful || code == 405 || code == 403 || code == 410
+            val accepted = response.isSuccessful || code == 405
             Timber.tag(logTag).d("Stream URL validation: code=$code accepted=$accepted")
             return accepted
         } catch (e: java.io.IOException) {
@@ -611,5 +617,7 @@ object YTPlayerUtils {
 
     fun forceRefreshForVideo(videoId: String) {
         Timber.tag(logTag).d("Force refreshing for videoId: $videoId")
+        val currentOffset = videoFallbackOffsets[videoId] ?: 0
+        videoFallbackOffsets[videoId] = (currentOffset + 1).coerceAtMost(STREAM_FALLBACK_CLIENTS.size - 1)
     }
 }

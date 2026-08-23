@@ -80,11 +80,16 @@ constructor(
                             .followSslRedirects(true)
                             .addInterceptor { chain ->
                                 val originalRequest = chain.request()
+                                val requestUrl = originalRequest.url.toString()
                                 val requestBuilder = originalRequest.newBuilder()
-                                    .header("User-Agent", "com.google.android.apps.youtube.music/6.42.52 (Linux; U; Android 14; gms)")
+                                    .header("User-Agent", "com.google.android.youtube/19.29.37 (Linux; U; Android 14; en_US)")
                                     .header("Connection", "keep-alive")
                                 if (originalRequest.header("Range") == null) {
                                     requestBuilder.header("Range", "bytes=0-")
+                                }
+                                if (requestUrl.contains("googlevideo.com")) {
+                                    requestBuilder.removeHeader("Cookie")
+                                    requestBuilder.removeHeader("Authorization")
                                 }
                                 chain.proceed(requestBuilder.build())
                             }
