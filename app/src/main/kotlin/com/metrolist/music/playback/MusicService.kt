@@ -60,6 +60,7 @@ import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERR
 import androidx.media3.datasource.cache.CacheWriter
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.datasource.okhttp.OkHttpDataSource
+import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
@@ -77,6 +78,7 @@ import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.MoreExecutors
+import okhttp3.OkHttpClient
 import com.metrolist.innertube.YouTube
 import com.metrolist.innertube.models.SongItem
 import com.metrolist.innertube.models.WatchEndpoint
@@ -1118,9 +1120,21 @@ class MusicService :
             silenceProcessor.instantModeEnabled = skipSilence && instantSkip
         }
 
+        val loadControl =
+            DefaultLoadControl
+                .Builder()
+                .setBufferDurationsMs(
+                    /* minBufferMs = */ 30_000,
+                    /* maxBufferMs = */ 90_000,
+                    /* bufferForPlaybackMs = */ 1_000,
+                    /* bufferForPlaybackAfterRebufferMs = */ 2_000,
+                ).setPrioritizeTimeOverSizeThresholds(true)
+                .build()
+
         val player =
             ExoPlayer
                 .Builder(this)
+                .setLoadControl(loadControl)
                 .setMediaSourceFactory(createMediaSourceFactory())
                 .setRenderersFactory(createRenderersFactory(eqProcessor, silenceProcessor))
                 .setHandleAudioBecomingNoisy(true)
@@ -2738,13 +2752,27 @@ class MusicService :
         return false
     }
 
+    private fun isTimeoutError(error: PlaybackException): Boolean {
+        if (error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT) return true
+        var cause: Throwable? = error.cause
+        while (cause != null) {
+            if (cause is java.net.SocketTimeoutException ||
+                cause is java.net.SocketException ||
+                cause is java.io.InterruptedIOException
+            ) {
+                return true
+            }
+            cause = cause.cause
+        }
+        return false
+    }
+
     private fun isNetworkRelatedError(error: PlaybackException): Boolean {
         // Don't treat specific errors as network errors - they need special handling
-        if (isExpiredUrlError(error) || isRangeNotSatisfiableError(error) || isPageReloadError(error)) {
+        if (isExpiredUrlError(error) || isRangeNotSatisfiableError(error) || isPageReloadError(error) || isTimeoutError(error)) {
             return false
         }
         return error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED ||
-            error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT ||
             error.errorCode == PlaybackException.ERROR_CODE_IO_INVALID_HTTP_CONTENT_TYPE ||
             error.cause is java.net.ConnectException ||
             error.cause is java.net.UnknownHostException ||
@@ -2778,6 +2806,7 @@ class MusicService :
         // Transient YouTube CDN / decoder errors are auto-recovered; skip crash reporting.
         val isRecoverableYouTubeError = isRangeNotSatisfiableError(error) ||
             isExpiredUrlError(error) ||
+            isTimeoutError(error) ||
             isPageReloadError(error) ||
             isMissingStreamDataError(error) ||
             isMediaCodecError(error) ||
@@ -2820,8 +2849,8 @@ class MusicService :
                 return
             }
 
-            isExpiredUrlError(error) -> {
-                Timber.tag(TAG).d("Expired URL (403) detected, refreshing stream URL")
+            isExpiredUrlError(error) || isTimeoutError(error) -> {
+                Timber.tag(TAG).d("Expired URL (403) or timeout detected, refreshing stream URL for $mediaId")
                 handleExpiredUrlError(mediaId)
                 return
             }
@@ -3085,6 +3114,11 @@ class MusicService :
         songUrlCache.remove(mediaId)
         Timber.tag(TAG).d("Cleared cached URL for $mediaId")
 
+        // Clear player cache chunk to prevent corrupt playback
+        try {
+            playerCache.removeResource(mediaId)
+        } catch (_: Exception) {}
+
         // Clear decryption caches
         try {
             YTPlayerUtils.forceRefreshForVideo(mediaId)
@@ -3097,13 +3131,19 @@ class MusicService :
             scope.launch {
                 delay(RETRY_DELAY_MS)
 
-                // Seek to current position to force URL re-resolution
+                if (!playerInitialized.value) return@launch
+
+                // Seek to current position to force URL re-resolution without interrupting queue
                 val currentPosition = player.currentPosition
                 val currentIndex = player.currentMediaItemIndex
-                player.seekTo(currentIndex, currentPosition)
-                player.prepare()
-
-                Timber.tag(TAG).d("Retrying playback for $mediaId after 403 error")
+                if (currentIndex != C.INDEX_UNSET) {
+                    player.seekTo(currentIndex, currentPosition)
+                    player.prepare()
+                    player.playWhenReady = true
+                    Timber.tag(TAG).d("Retrying playback for $mediaId after 403/timeout error at position $currentPosition")
+                } else {
+                    handleFinalFailure()
+                }
             }
     }
 
@@ -3283,18 +3323,7 @@ class MusicService :
                         playerCache,
                         DefaultDataSource.Factory(
                             this@MusicService,
-                            OkHttpDataSource.Factory(
-                                OkHttpClient.Builder()
-                                    .proxy(YouTube.proxy)
-                                    .proxyAuthenticator { _, response ->
-                                        YouTube.proxyAuth?.let { auth ->
-                                            response.request
-                                                .newBuilder()
-                                                .header("Proxy-Authorization", auth)
-                                                .build()
-                                        } ?: response.request
-                                    }.build(),
-                            ),
+                            OkHttpDataSource.Factory(createOkHttpClient()),
                         ).createDataSource(),
                     )
 
@@ -3330,6 +3359,33 @@ class MusicService :
         }
     }
 
+    private fun createOkHttpClient(): OkHttpClient =
+        OkHttpClient
+            .Builder()
+            .connectTimeout(java.time.Duration.ofMillis(20000))
+            .readTimeout(java.time.Duration.ofMillis(30000))
+            .followRedirects(true)
+            .followSslRedirects(true)
+            .addInterceptor { chain ->
+                val originalRequest = chain.request()
+                val requestBuilder = originalRequest.newBuilder()
+                    .header("User-Agent", "com.google.android.apps.youtube.music/6.42.52 (Linux; U; Android 14; gms)")
+                    .header("Connection", "keep-alive")
+                if (originalRequest.header("Range") == null) {
+                    requestBuilder.header("Range", "bytes=0-")
+                }
+                chain.proceed(requestBuilder.build())
+            }
+            .proxy(YouTube.proxy)
+            .proxyAuthenticator { _, response ->
+                YouTube.proxyAuth?.let { auth ->
+                    response.request
+                        .newBuilder()
+                        .header("Proxy-Authorization", auth)
+                        .build()
+                } ?: response.request
+            }.build()
+
     private fun createCacheDataSource(): CacheDataSource.Factory =
         CacheDataSource
             .Factory()
@@ -3341,19 +3397,7 @@ class MusicService :
                     .setUpstreamDataSourceFactory(
                         DefaultDataSource.Factory(
                             this,
-                            OkHttpDataSource.Factory(
-                                OkHttpClient
-                                    .Builder()
-                                    .proxy(YouTube.proxy)
-                                    .proxyAuthenticator { _, response ->
-                                        YouTube.proxyAuth?.let { auth ->
-                                            response.request
-                                                .newBuilder()
-                                                .header("Proxy-Authorization", auth)
-                                                .build()
-                                        } ?: response.request
-                                    }.build(),
-                            ),
+                            OkHttpDataSource.Factory(createOkHttpClient()),
                         ),
                     ),
             ).setCacheWriteDataSinkFactory(null)
@@ -3800,7 +3844,7 @@ class MusicService :
 
                 songUrlCache[mediaId] =
                     streamUrl to System.currentTimeMillis() + (nonNullPlayback.streamExpiresInSeconds * 1000L)
-                return@Factory dataSpec.withUri(streamUrl.toUri()).subrange(0, CHUNK_LENGTH)
+                return@Factory dataSpec.withUri(streamUrl.toUri())
             }
         }
     }

@@ -10,6 +10,8 @@ import com.metrolist.music.utils.cipher.CipherDeobfuscator
 import com.metrolist.music.utils.cipher.PlayerJsFetcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -27,6 +29,7 @@ import kotlin.coroutines.resumeWithException
  */
 object EjsNTransformSolver {
     private const val TAG = "Metrolist_EjsNSolver"
+    private val solverMutex = Mutex()
 
     private var solverWebView: SolverWebView? = null
 
@@ -44,7 +47,7 @@ object EjsNTransformSolver {
         Timber.tag(TAG).d("SABR n-param: $nValue")
 
         return withContext(NonCancellable) {
-            val solver = getOrCreateSolver()
+            val solver = solverMutex.withLock { getOrCreateSolver() }
             if (solver == null) {
                 return@withContext url
             }
@@ -246,18 +249,22 @@ function transformN(nValue) {
             initContinuation.resume(this)
         }
 
+        private val transformMutex = Mutex()
+
         suspend fun transformN(nValue: String): String {
             if (!nFunctionAvailable) {
                 throw SabrException("EJS n-transform not available")
             }
 
-            return withContext(Dispatchers.Main) {
-                suspendCancellableCoroutine { cont ->
-                    nContinuation = cont
-                    webView.evaluateJavascript(
-                        "transformN('${escapeJsString(nValue)}')",
-                        null
-                    )
+            return transformMutex.withLock {
+                withContext(Dispatchers.Main) {
+                    suspendCancellableCoroutine { cont ->
+                        nContinuation = cont
+                        webView.evaluateJavascript(
+                            "transformN('${escapeJsString(nValue)}')",
+                            null
+                        )
+                    }
                 }
             }
         }

@@ -45,6 +45,13 @@ sealed class Screens(
         route = "library"
     )
 
+    object Travel : Screens(
+        titleId = R.string.travel,
+        iconIdInactive = R.drawable.explore_outlined,
+        iconIdActive = R.drawable.explore_outlined,
+        route = "travel_screen"
+    )
+
     companion object {
         val MainScreens = listOf(Home, Search, ListenTogether, Library)
     }

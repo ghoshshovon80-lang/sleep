@@ -94,6 +94,7 @@ import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.metrolist.innertube.YouTube
+import com.metrolist.innertube.pages.HomePage
 import com.metrolist.innertube.models.AlbumItem
 import com.metrolist.innertube.models.ArtistItem
 import com.metrolist.innertube.models.EpisodeItem
@@ -1211,9 +1212,13 @@ fun HomeScreen(
                 contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
             ) {
                 item(key = "chips_row") {
+                    val travelChip = remember { HomePage.Chip(title = "Travel", endpoint = null, deselectEndPoint = null) }
+                    val durgaPujaChip = remember { HomePage.Chip(title = "Durga Puja", endpoint = null, deselectEndPoint = null) }
                     val defaultSleepChips = remember {
-                        listOf(
+                        listOf<Pair<HomePage.Chip?, String>>(
                             null to "All",
+                            travelChip to "Travel",
+                            durgaPujaChip to "Durga Puja",
                             null to "Deep Sleep",
                             null to "Ambient",
                             null to "Focus",
@@ -1224,11 +1229,22 @@ fun HomeScreen(
                         chips = if (homePage?.chips.isNullOrEmpty()) {
                             defaultSleepChips
                         } else {
-                            homePage?.chips?.map { it to it.title } ?: defaultSleepChips
+                            val remoteChips: List<Pair<HomePage.Chip?, String>> = homePage?.chips?.map { (it as HomePage.Chip?) to it.title } ?: emptyList()
+                            val localChips = listOfNotNull(
+                                if (remoteChips.none { it.second.equals("Travel", ignoreCase = true) }) travelChip to "Travel" else null,
+                                if (remoteChips.none { it.second.equals("Durga Puja", ignoreCase = true) }) durgaPujaChip to "Durga Puja" else null
+                            )
+                            listOf<Pair<HomePage.Chip?, String>>(null to "All") + localChips + remoteChips.filter { it.second != "All" }
                         },
                         currentValue = selectedChip,
-                        onValueUpdate = {
-                            viewModel.toggleChip(it)
+                        onValueUpdate = { chip ->
+                            if (chip?.title == "Travel") {
+                                navController.navigate("travel_screen")
+                            } else if (chip?.title == "Durga Puja") {
+                                navController.navigate("durga_puja_screen")
+                            } else {
+                                viewModel.toggleChip(chip)
+                            }
                         },
                     )
                 }

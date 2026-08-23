@@ -296,14 +296,19 @@ object YTPlayerUtils {
                 Timber.tag(TAG).d("  currentClient: ${currentClient.clientName}")
                 Timber.tag(TAG).d("  useWebPoTokens: ${currentClient.useWebPoTokens}")
 
-                // Apply n-transform and PoToken for web clients OR for private tracks (including TVHTML5)
-                val needsNTransform = currentClient.useWebPoTokens ||
+                // Apply n-transform for any stream URL that contains an 'n' parameter,
+                // for web clients, or for private tracks. This prevents bandwidth throttling
+                // and the 20-30s playback cutoff across all client formats (e.g. ANDROID_VR).
+                val hasNParam = Regex("[?&]n=").containsMatchIn(streamUrl)
+                val needsNTransform = hasNParam ||
+                    currentClient.useWebPoTokens ||
                     currentClient.clientName in listOf("WEB", "WEB_REMIX", "WEB_CREATOR", "TVHTML5") ||
                     isPrivatelyOwnedTrack
 
                 Timber.tag(TAG).d("N-transform decision:")
+                Timber.tag(TAG).d("  hasNParam: $hasNParam")
                 Timber.tag(TAG).d("  needsNTransform: $needsNTransform")
-                Timber.tag(TAG).d("  Reason: useWebPoTokens=${currentClient.useWebPoTokens}, " +
+                Timber.tag(TAG).d("  Reason: hasNParam=$hasNParam, useWebPoTokens=${currentClient.useWebPoTokens}, " +
                     "clientInList=${currentClient.clientName in listOf("WEB", "WEB_REMIX", "WEB_CREATOR", "TVHTML5")}, " +
                     "isPrivatelyOwnedTrack=$isPrivatelyOwnedTrack")
 
@@ -314,7 +319,7 @@ object YTPlayerUtils {
                         Timber.tag(TAG).d("  Original URL preview: ${streamUrl.take(100)}...")
 
                         val originalUrl = streamUrl
-                        // Use CipherDeobfuscator for n-transform (fixed implementation)
+                        // Use CipherDeobfuscator for n-transform (with EJS AST solver fallback)
                         streamUrl = CipherDeobfuscator.transformNParamInUrl(streamUrl)
 
                         Timber.tag(TAG).d("  Transformed URL length: ${streamUrl.length}")

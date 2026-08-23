@@ -1086,4 +1086,40 @@
     <string name="instagram">Instagram</string>
     <string name="x_twitter">X (Twitter)</string>
     <string name="github">GitHub</string>
+    <!-- Travel Screen -->
+    <string name="travel">Travel</string>
+    <string name="travel_experience">Travel Experience</string>
+    <string name="travel_subtitle">Immersive Ambient Journeys &amp; Vintage Lounges</string>
+    <string name="tab_bus_driver">90s Bus Driver</string>
+    <string name="tab_deluxe_saloon">Deluxe Saloon</string>
+    <string name="driver_cabin">Driver Cabin - 90s Night Express</string>
+    <string name="engine_hum">Engine Hum</string>
+    <string name="rain_windshield">Rain on Windshield</string>
+    <string name="honk_horn">HONK HORN</string>
+    <string name="saloon_lounge">Deluxe Saloon Transistor Lounge</string>
+    <string name="scissors_snip">Barber Scissors</string>
+    <string name="ceiling_fan">Ceiling Fan Hum</string>
+    <string name="vinyl_warmth">Vinyl Static</string>
+    <string name="bus_driver_title_hindi">बस ड्राइवर</string>
+    <string name="deluxe_saloon_title_hindi">डीलक्स सैलून</string>
+    <string name="horn_ok_please_hindi">हॉर्न ओके प्लीज</string>
+    <string name="horn_ok_please_english">HORN OK PLEASEEEE</string>
+    <string name="powered_by_rj_media">POWERED BY RJ MEDIA</string>
+    <string name="saloon_taau_quote_default">"Aaj Sunday hai! 1 ghante ki waiting hai, 4 baje ajaana beta. Abhi bahot number hai"</string>
+    <!-- Durga Puja Screen -->
+    <string name="durga_puja">Durga Puja</string>
+    <string name="pujo_aaschhe">পূজো আসছে</string>
+    <string name="days_until_durga_pujo">%1$d days until Durga Pujo</string>
+    <string name="playlists_title">PLAYLISTS</string>
+    <string name="durga_puja_desc">The main curated Durga Puja playlist.</string>
+    <string name="mahalaya_desc">Birendra Krishna Bhadra\'s iconic Mahisasuramardini narration and Chandi Path.</string>
+    <string name="mahalaya_songs_desc">Classic Puja dawn melodies.</string>
+    <string name="tab_durga_puja">DURGA PUJA</string>
+    <string name="tab_mahalaya">MAHALAYA</string>
+    <string name="tab_mahalaya_songs">MAHALAYA SONGS</string>
+    <string name="puja_shuffle">Shuffle</string>
+    <string name="puja_repeat">Repeat</string>
+    <string name="dhak">Dhak</string>
 </resources>
+
+

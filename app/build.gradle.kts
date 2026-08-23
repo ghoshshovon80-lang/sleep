@@ -32,7 +32,7 @@ android {
     defaultConfig {
         applicationId = applicationIdOverride ?: "com.yourdomain.sleep"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 3
         versionName = "1.0.2"
         resValue("string", "app_name", appNameOverride ?: "Sleep")

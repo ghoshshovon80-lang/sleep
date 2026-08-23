@@ -85,6 +85,14 @@ fun NavGraphBuilder.navigationBuilder(
         HomeScreen(navController = navController, snackbarHostState = snackbarHostState)
     }
 
+    composable("travel_screen") {
+        TravelScreen(navController)
+    }
+
+    composable("durga_puja_screen") {
+        DurgaPujaScreen(navController)
+    }
+
     composable(Screens.Search.route) { backStackEntry ->
         val pureBlackEnabled by rememberPreference(PureBlackKey, defaultValue = false)
         val darkTheme by rememberEnumPreference(DarkModeKey, defaultValue = DarkMode.AUTO)

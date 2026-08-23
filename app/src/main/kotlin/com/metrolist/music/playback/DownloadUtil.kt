@@ -74,6 +74,20 @@ constructor(
                 .setUpstreamDataSourceFactory(
                     OkHttpDataSource.Factory(
                         OkHttpClient.Builder()
+                            .connectTimeout(java.time.Duration.ofMillis(20000))
+                            .readTimeout(java.time.Duration.ofMillis(30000))
+                            .followRedirects(true)
+                            .followSslRedirects(true)
+                            .addInterceptor { chain ->
+                                val originalRequest = chain.request()
+                                val requestBuilder = originalRequest.newBuilder()
+                                    .header("User-Agent", "com.google.android.apps.youtube.music/6.42.52 (Linux; U; Android 14; gms)")
+                                    .header("Connection", "keep-alive")
+                                if (originalRequest.header("Range") == null) {
+                                    requestBuilder.header("Range", "bytes=0-")
+                                }
+                                chain.proceed(requestBuilder.build())
+                            }
                             .proxy(YouTube.proxy)
                             .proxyAuthenticator { _, response ->
                                 YouTube.proxyAuth?.let { auth ->

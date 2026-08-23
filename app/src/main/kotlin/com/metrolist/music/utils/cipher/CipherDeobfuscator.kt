@@ -2,12 +2,16 @@ package com.metrolist.music.utils.cipher
 
 import android.content.Context
 import android.net.Uri
+import com.metrolist.music.utils.sabr.EjsNTransformSolver
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 object CipherDeobfuscator {
     private const val TAG = "Metrolist_CipherDeobfusc"
+    private val mutex = Mutex()
 
     lateinit var appContext: Context
         private set
@@ -50,7 +54,7 @@ object CipherDeobfuscator {
 
         Timber.tag(TAG).d("Deobfuscating cipher for $videoId: sig=${obfuscatedSig.take(20)}..., sp=$sigParam")
 
-        val webView = getOrCreateWebView(forceRefresh = isRetry)
+        val webView = mutex.withLock { getOrCreateWebView(forceRefresh = isRetry) }
             ?: return null
 
         // Deobfuscate signature
@@ -66,15 +70,39 @@ object CipherDeobfuscator {
 
     /**
      * Transform the 'n' parameter in a streaming URL to avoid throttling/403.
-     * Uses the runtime-discovered n-function from the player JS WebView.
+     * Uses the runtime-discovered n-function from the player JS WebView,
+     * falling back to the AST-based EjsNTransformSolver if WebView discovery fails.
      * Returns the URL with the transformed 'n' value, or the original URL if transform fails.
      */
     suspend fun transformNParamInUrl(url: String): String {
+        val nMatch = Regex("[?&]n=([^&]+)").find(url)
+        if (nMatch == null) {
+            Timber.tag(TAG).d("No 'n' parameter found in URL, skipping transform")
+            return url
+        }
+
         return try {
-            transformNInternal(url)
+            val result = transformNInternal(url)
+            if (result == url) {
+                Timber.tag(TAG).d("CipherWebView did not transform n-param, trying EjsNTransformSolver fallback")
+                val ejsResult = EjsNTransformSolver.transformNParamInUrl(url)
+                if (ejsResult != url) {
+                    Timber.tag(TAG).d("N-transform succeeded via EjsNTransformSolver fallback")
+                    ejsResult
+                } else {
+                    result
+                }
+            } else {
+                result
+            }
         } catch (e: Exception) {
-            Timber.tag(TAG).e(e, "N-transform failed, returning original URL: ${e.message}")
-            url
+            Timber.tag(TAG).e(e, "CipherWebView n-transform failed, trying EjsNTransformSolver fallback: ${e.message}")
+            try {
+                EjsNTransformSolver.transformNParamInUrl(url)
+            } catch (ejsE: Exception) {
+                Timber.tag(TAG).e(ejsE, "EjsNTransformSolver fallback also failed: ${ejsE.message}")
+                url
+            }
         }
     }
 
@@ -88,7 +116,7 @@ object CipherDeobfuscator {
         val nValue = Uri.decode(nMatch.groupValues[1])
         Timber.tag(TAG).d("N-param found: $nValue")
 
-        val webView = getOrCreateWebView(forceRefresh = false) ?: return url
+        val webView = mutex.withLock { getOrCreateWebView(forceRefresh = false) } ?: return url
 
         if (!webView.nFunctionAvailable) {
             Timber.tag(TAG).e("N-transform function was not discovered at init time")
