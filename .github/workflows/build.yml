@@ -65,16 +65,20 @@ jobs:
           LASTFM_SECRET: ${{ secrets.LASTFM_SECRET }}
 
       - name: Sign APK
+        if: env.ANDROID_SIGNING_KEY != ''
         uses: ilharp/sign-android-release@v2.0.0
+        env:
+          ANDROID_SIGNING_KEY: ${{ secrets.ANDROID_SIGNING_KEY || secrets.KEYSTORE }}
         with:
-          releaseDir: app/build/outputs/apk/${{ matrix.variant }}/release/
-          signingKey: ${{ secrets.KEYSTORE }}
-          keyAlias: ${{ secrets.KEY_ALIAS }}
+          releaseDirectory: app/build/outputs/apk/${{ matrix.variant }}/release/
+          signingKey: ${{ secrets.ANDROID_SIGNING_KEY || secrets.KEYSTORE }}
+          alias: ${{ secrets.KEY_ALIAS || secrets.ALIAS }}
+          keyAlias: ${{ secrets.KEY_ALIAS || secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
           buildToolsVersion: 35.0.0
 
-      - name: Move signed APK
+      - name: Move APK
         run: |
           OUTPUT_DIR="app/build/outputs/apk/${{ matrix.variant }}/release"
           mkdir -p "$OUTPUT_DIR/out"
@@ -83,9 +87,20 @@ jobs:
           else
             TARGET_NAME="app-universal-release.apk"
           fi
-          find "$OUTPUT_DIR" -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | xargs -I{} mv {} "$OUTPUT_DIR/out/$TARGET_NAME"
+          APK=$(find "$OUTPUT_DIR" -maxdepth 1 -name "*-signed.apk" -o -name "*-unsigned-signed.apk" | head -1)
+          if [ -z "$APK" ]; then
+            APK=$(find "$OUTPUT_DIR" -maxdepth 1 -name "*.apk" | head -1)
+          fi
+          if [ -n "$APK" ]; then
+            mv "$APK" "$OUTPUT_DIR/out/$TARGET_NAME"
+            echo "Moved $APK to $OUTPUT_DIR/out/$TARGET_NAME"
+          else
+            echo "No APK found in $OUTPUT_DIR"
+            ls -la "$OUTPUT_DIR"
+            exit 1
+          fi
 
-      - name: Upload Signed APK
+      - name: Upload APK
         uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.variant == 'gms' && 'app-with-Google-Cast' || 'app-release' }}
@@ -129,6 +144,9 @@ jobs:
         run: chmod +x gradlew
 
       - name: Restore Persistent Keystore
+        if: env.DEBUG_KEYSTORE != ''
+        env:
+          DEBUG_KEYSTORE: ${{ secrets.DEBUG_KEYSTORE }}
         run: |
           echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
 
