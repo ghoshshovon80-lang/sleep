@@ -2674,14 +2674,24 @@ class MusicService :
 
     /**
      * Checks if the error is due to YouTube client deprecation, unplayable status,
+     * bot verification / login requirements ("Please sign in", "This video is not available"),
      * or stream resolution issues ("YouTube is no longer supported in this application or device").
      */
     private fun isYouTubeUnsupportedOrUnplayableError(error: PlaybackException): Boolean {
         val keywords =
             listOf(
+                "please sign in",
+                "sign in",
+                "this video is not available",
+                "not available",
                 "no longer supported",
                 "not supported",
                 "unplayable",
+                "login_required",
+                "age_check_required",
+                "age_verification_required",
+                "content_check_required",
+                "video unavailable",
                 "could not find stream",
                 "missing stream",
                 "bad stream",
@@ -3408,6 +3418,8 @@ class MusicService :
                 if (requestUrl.contains("googlevideo.com")) {
                     requestBuilder.removeHeader("Cookie")
                     requestBuilder.removeHeader("Authorization")
+                    requestBuilder.removeHeader("Origin")
+                    requestBuilder.removeHeader("Referer")
                 }
                 chain.proceed(requestBuilder.build())
             }

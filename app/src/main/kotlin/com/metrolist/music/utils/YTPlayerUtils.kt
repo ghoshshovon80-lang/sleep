@@ -59,19 +59,19 @@ object YTPlayerUtils {
     private val MAIN_CLIENT: YouTubeClient = WEB_REMIX
 
     private val STREAM_FALLBACK_CLIENTS: Array<YouTubeClient> = arrayOf(
-        ANDROID_VR_1_61_48,
-        ANDROID_TESTSUITE,
-        ANDROID_MUSIC,
-        MOBILE,
         IOS,
+        TVHTML5_SIMPLY_EMBEDDED_PLAYER,
+        ANDROID_TESTSUITE,
+        ANDROID_VR,
+        ANDROID_MUSIC,
+        WEB_REMIX,
+        MWEB,
+        WEB,
+        MOBILE,
         IPADOS,
         ANDROID_VR_1_43_32,
         ANDROID_VR_NO_AUTH,
         ANDROID_CREATOR,
-        WEB_REMIX,
-        MWEB,
-        WEB,
-        TVHTML5_SIMPLY_EMBEDDED_PLAYER,
         TVHTML5,
         WEB_CREATOR
     )
@@ -79,13 +79,11 @@ object YTPlayerUtils {
     private val videoFallbackOffsets = ConcurrentHashMap<String, Int>()
 
     /**
-     * For normal content we skip the MAIN_CLIENT (WEB_REMIX) stream attempt and go
-     * straight to this client. WEB_REMIX returns formats behind YouTube's signature
-     * cipher / n-challenge, which can no longer be solved client-side. ANDROID_VR /
-     * ANDROID_TESTSUITE return pre-signed URLs that need no deobfuscation.
+     * For normal content we prioritize zero-token / unrestricted bypass clients (IOS, TVHTML5)
+     * which return valid streams without requiring PO tokens or user login.
      */
     private val NORMAL_CONTENT_STREAM_START_INDEX: Int =
-        STREAM_FALLBACK_CLIENTS.indexOf(ANDROID_VR_1_61_48).takeIf { it >= 0 } ?: 0
+        STREAM_FALLBACK_CLIENTS.indexOf(IOS).takeIf { it >= 0 } ?: 0
 
     data class PlaybackData(
         val audioConfig: PlayerResponse.PlayerConfig.AudioConfig?,
@@ -253,8 +251,11 @@ object YTPlayerUtils {
             }
             streamPlayerResponse = currentResponse
 
+            val isPlayable = currentResponse.playabilityStatus.status == "OK" &&
+                currentResponse.streamingData?.adaptiveFormats?.isNotEmpty() == true
+
             // process current client response
-            if (currentResponse.playabilityStatus.status == "OK") {
+            if (isPlayable) {
                 Timber.tag(logTag).d("Player response status OK for client: ${client.clientName}")
 
                 // Skip NewPipe for age-restricted content (NewPipe doesn't use our auth)
@@ -355,7 +356,7 @@ object YTPlayerUtils {
                     streamExpiresInSeconds = null
                 }
             } else {
-                Timber.tag(logTag).d("Player response status not OK for ${client.clientName}: ${currentResponse.playabilityStatus.status}, reason: ${currentResponse.playabilityStatus.reason}")
+                Timber.tag(logTag).d("Player response not playable for ${client.clientName}: status=${currentResponse.playabilityStatus.status}, reason=${currentResponse.playabilityStatus.reason}")
             }
         }
 
@@ -448,7 +449,14 @@ object YTPlayerUtils {
             if (!userAgent.isNullOrEmpty()) {
                 requestBuilder.header("User-Agent", userAgent)
             } else {
-                requestBuilder.header("User-Agent", "com.google.android.youtube/19.34.42 (Linux; U; Android 14; en_US)")
+                requestBuilder.header("User-Agent", YouTubeClient.IOS.userAgent)
+            }
+
+            if (url.contains("googlevideo.com")) {
+                requestBuilder.removeHeader("Cookie")
+                requestBuilder.removeHeader("Authorization")
+                requestBuilder.removeHeader("Origin")
+                requestBuilder.removeHeader("Referer")
             }
 
             // Do NOT add Cookie or Authorization headers to googlevideo.com CDN streams

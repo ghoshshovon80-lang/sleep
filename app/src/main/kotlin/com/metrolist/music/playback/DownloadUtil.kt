@@ -90,6 +90,8 @@ constructor(
                                 if (requestUrl.contains("googlevideo.com")) {
                                     requestBuilder.removeHeader("Cookie")
                                     requestBuilder.removeHeader("Authorization")
+                                    requestBuilder.removeHeader("Origin")
+                                    requestBuilder.removeHeader("Referer")
                                 }
                                 chain.proceed(requestBuilder.build())
                             }
