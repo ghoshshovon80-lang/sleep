@@ -2673,6 +2673,32 @@ class MusicService :
     }
 
     /**
+     * Checks if the error is due to YouTube client deprecation, unplayable status,
+     * or stream resolution issues ("YouTube is no longer supported in this application or device").
+     */
+    private fun isYouTubeUnsupportedOrUnplayableError(error: PlaybackException): Boolean {
+        val keywords =
+            listOf(
+                "no longer supported",
+                "not supported",
+                "unplayable",
+                "could not find stream",
+                "missing stream",
+                "bad stream",
+                "io_unspecified",
+            )
+        var cause: Throwable? = error
+        while (cause != null) {
+            val message = cause.message?.lowercase()
+            if (message != null && keywords.any { message.contains(it) }) {
+                return true
+            }
+            cause = cause.cause
+        }
+        return false
+    }
+
+    /**
      * Transient MediaCodec decoder failures (e.g. opus decoder dropping a frame).
      * These are not actionable for the user and recover by re-initializing the
      * audio renderer.
@@ -2810,6 +2836,10 @@ class MusicService :
             isTimeoutError(error) ||
             isPageReloadError(error) ||
             isMissingStreamDataError(error) ||
+            isYouTubeUnsupportedOrUnplayableError(error) ||
+            error.errorCode == PlaybackException.ERROR_CODE_REMOTE_ERROR ||
+            error.errorCode == PlaybackException.ERROR_CODE_IO_UNSPECIFIED ||
+            error.errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS ||
             isMediaCodecError(error) ||
             isMalformedContainerError(error) ||
             isAudioSinkBufferError(error)
@@ -2850,14 +2880,9 @@ class MusicService :
                 return
             }
 
-            isExpiredUrlError(error) || isTimeoutError(error) -> {
-                Timber.tag(TAG).d("Expired URL (403) or timeout detected, refreshing stream URL for $mediaId")
-                handleExpiredUrlError(mediaId)
-                return
-            }
-
-            isMissingStreamDataError(error) -> {
-                Timber.tag(TAG).d("Missing stream data from YouTube, refreshing stream URL")
+            isExpiredUrlError(error) || isTimeoutError(error) || isMissingStreamDataError(error) ||
+                isYouTubeUnsupportedOrUnplayableError(error) || error.errorCode == PlaybackException.ERROR_CODE_REMOTE_ERROR -> {
+                Timber.tag(TAG).d("Expired URL / unsupported / stream error detected, refreshing stream URL for $mediaId")
                 handleExpiredUrlError(mediaId)
                 return
             }
@@ -3167,10 +3192,14 @@ class MusicService :
 
                 val currentPosition = player.currentPosition
                 val currentIndex = player.currentMediaItemIndex
-                player.seekTo(currentIndex, currentPosition)
-                player.prepare()
-
-                Timber.tag(TAG).d("Retrying playback for $mediaId after generic IO error")
+                if (currentIndex != C.INDEX_UNSET) {
+                    player.seekTo(currentIndex, currentPosition)
+                    player.prepare()
+                    player.playWhenReady = true
+                    Timber.tag(TAG).d("Retrying playback for $mediaId after generic IO error at position $currentPosition")
+                } else {
+                    handleFinalFailure()
+                }
             }
     }
 
@@ -3371,7 +3400,7 @@ class MusicService :
                 val originalRequest = chain.request()
                 val requestUrl = originalRequest.url.toString()
                 val requestBuilder = originalRequest.newBuilder()
-                    .header("User-Agent", "com.google.android.youtube/19.29.37 (Linux; U; Android 14; en_US)")
+                    .header("User-Agent", "com.google.android.youtube/19.34.42 (Linux; U; Android 14; en_US)")
                     .header("Connection", "keep-alive")
                 if (originalRequest.header("Range") == null) {
                     requestBuilder.header("Range", "bytes=0-")

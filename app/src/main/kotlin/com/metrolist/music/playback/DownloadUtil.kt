@@ -82,7 +82,7 @@ constructor(
                                 val originalRequest = chain.request()
                                 val requestUrl = originalRequest.url.toString()
                                 val requestBuilder = originalRequest.newBuilder()
-                                    .header("User-Agent", "com.google.android.youtube/19.29.37 (Linux; U; Android 14; en_US)")
+                                    .header("User-Agent", "com.google.android.youtube/19.34.42 (Linux; U; Android 14; en_US)")
                                     .header("Connection", "keep-alive")
                                 if (originalRequest.header("Range") == null) {
                                     requestBuilder.header("Range", "bytes=0-")
@@ -131,10 +131,10 @@ constructor(
                         id = mediaId,
                         itag = format.itag,
                         mimeType = format.mimeType.split(";")[0],
-                        codecs = format.mimeType.split("codecs=")[1].removeSurrounding("\""),
+                        codecs = format.mimeType.substringAfter("codecs=", "").removeSurrounding("\""),
                         bitrate = format.bitrate,
                         sampleRate = format.audioSampleRate,
-                        contentLength = format.contentLength!!,
+                        contentLength = format.contentLength ?: 0L,
                         loudnessDb = playbackData.audioConfig?.loudnessDb,
                         perceptualLoudnessDb = playbackData.audioConfig?.perceptualLoudnessDb,
                         playbackUrl = playbackData.playbackTracking?.videostatsPlaybackUrl?.baseUrl

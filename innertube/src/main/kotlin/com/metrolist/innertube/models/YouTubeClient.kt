@@ -103,9 +103,9 @@ data class YouTubeClient(
 
         val IOS = YouTubeClient(
             clientName = "IOS",
-            clientVersion = "21.03.1",
+            clientVersion = "21.03.3",
             clientId = "5",
-            userAgent = "com.google.ios.youtube/21.03.1 (iPhone16,2; U; CPU iOS 18_2 like Mac OS X;)",
+            userAgent = "com.google.ios.youtube/21.03.3 (iPhone16,2; U; CPU iOS 18_2 like Mac OS X;)",
             osVersion = "18.2.22C152",
         )
 
@@ -113,7 +113,7 @@ data class YouTubeClient(
             clientName = "ANDROID_TESTSUITE",
             clientVersion = "1.9",
             clientId = "30",
-            userAgent = "com.google.android.youtube/19.29.37 (Linux; U; Android 14; en_US)",
+            userAgent = "com.google.android.youtube/19.34.42 (Linux; U; Android 14; en_US)",
             osName = "Android",
             osVersion = "14",
             deviceMake = "Google",
@@ -126,9 +126,9 @@ data class YouTubeClient(
 
         val MOBILE = YouTubeClient(
             clientName = "ANDROID",
-            clientVersion = "19.29.37",
+            clientVersion = "19.34.42",
             clientId = "3",
-            userAgent = "com.google.android.youtube/19.29.37 (Linux; U; Android 14; en_US)",
+            userAgent = "com.google.android.youtube/19.34.42 (Linux; U; Android 14; en_US; Pixel 8; Build/UQ1A.240205.004; Cronet/132.0.6808.3)",
             osName = "Android",
             osVersion = "14",
             deviceMake = "Google",
@@ -139,6 +139,33 @@ data class YouTubeClient(
             useSignatureTimestamp = true
         )
 
+        val ANDROID_MUSIC = YouTubeClient(
+            clientName = "ANDROID_MUSIC",
+            clientVersion = "7.02.52",
+            clientId = "21",
+            userAgent = "com.google.android.apps.youtube.music/7.02.52 (Linux; U; Android 14; en_US; Pixel 8; Build/UD1A.230803.041; Cronet/122.0.6261.64)",
+            osName = "Android",
+            osVersion = "14",
+            deviceMake = "Google",
+            deviceModel = "Pixel 8",
+            androidSdkVersion = "34",
+            packageName = "com.google.android.apps.youtube.music",
+            friendlyName = "Android Music",
+            loginSupported = true,
+            useSignatureTimestamp = true,
+        )
+
+        val MWEB = YouTubeClient(
+            clientName = "MWEB",
+            clientVersion = "2.20260213.01.00",
+            clientId = "65",
+            userAgent = "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36",
+            friendlyName = "Mobile Web",
+            loginSupported = true,
+            useSignatureTimestamp = true,
+            useWebPoTokens = true,
+        )
+
         /**
          * Video not playable: Paid / Movie / Private / Age-restricted.
          * Note: The 'Authorization' key must be excluded from the header.
@@ -146,9 +173,9 @@ data class YouTubeClient(
          */
         val ANDROID_NO_SDK = YouTubeClient(
             clientName = "ANDROID",
-            clientVersion = "19.29.37",
+            clientVersion = "19.34.42",
             clientId = "3",
-            userAgent = "com.google.android.youtube/19.29.37 (Linux; U; Android 14; en_US)",
+            userAgent = "com.google.android.youtube/19.34.42 (Linux; U; Android 14; en_US)",
             friendlyName = "Android No SDK",
             loginSupported = false,
             useSignatureTimestamp = false

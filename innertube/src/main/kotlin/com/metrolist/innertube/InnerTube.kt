@@ -149,8 +149,12 @@ class InnerTube {
             append("X-Goog-Api-Format-Version", "1")
             append("X-YouTube-Client-Name", client.clientId /* Not a typo. The Client-Name header does contain the client id. */)
             append("X-YouTube-Client-Version", client.clientVersion)
-            append("X-Origin", YouTubeClient.ORIGIN_YOUTUBE_MUSIC)
-            append("Referer", YouTubeClient.REFERER_YOUTUBE_MUSIC)
+            // Only send X-Origin and Referer for web / TV clients.
+            // Native mobile clients (ANDROID, ANDROID_VR, ANDROID_MUSIC, IOS) reject requests when web headers are present.
+            if (client.clientName in listOf("WEB", "WEB_REMIX", "WEB_CREATOR", "TVHTML5", "TVHTML5_SIMPLY_EMBEDDED_PLAYER", "MWEB")) {
+                append("X-Origin", YouTubeClient.ORIGIN_YOUTUBE_MUSIC)
+                append("Referer", YouTubeClient.REFERER_YOUTUBE_MUSIC)
+            }
             visitorData?.let { append("X-Goog-Visitor-Id", it) }
             if (setLogin && client.loginSupported) {
                 cookie?.let { cookie ->
