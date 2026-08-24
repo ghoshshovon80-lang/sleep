@@ -2680,6 +2680,9 @@ class MusicService :
     private fun isYouTubeUnsupportedOrUnplayableError(error: PlaybackException): Boolean {
         val keywords =
             listOf(
+                "bot",
+                "sign in to confirm",
+                "confirm you're not a bot",
                 "please sign in",
                 "sign in",
                 "this video is not available",

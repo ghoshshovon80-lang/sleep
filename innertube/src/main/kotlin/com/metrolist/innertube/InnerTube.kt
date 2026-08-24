@@ -149,9 +149,15 @@ class InnerTube {
             append("X-Goog-Api-Format-Version", "1")
             append("X-YouTube-Client-Name", client.clientId /* Not a typo. The Client-Name header does contain the client id. */)
             append("X-YouTube-Client-Version", client.clientVersion)
-            // Only send X-Origin and Referer for web / TV clients.
-            // Native mobile clients (ANDROID, ANDROID_VR, ANDROID_MUSIC, IOS) reject requests when web headers are present.
-            if (client.clientName in listOf("WEB", "WEB_REMIX", "WEB_CREATOR", "TVHTML5", "TVHTML5_SIMPLY_EMBEDDED_PLAYER", "MWEB")) {
+            // Send referer/origin for web / embedded TV clients
+            if (client.referer != null) {
+                append("Referer", client.referer)
+                if (client.referer.startsWith("https://www.youtube.com")) {
+                    append("X-Origin", "https://www.youtube.com")
+                } else if (client.referer.startsWith("https://music.youtube.com")) {
+                    append("X-Origin", YouTubeClient.ORIGIN_YOUTUBE_MUSIC)
+                }
+            } else if (client.clientName in listOf("WEB", "WEB_REMIX", "WEB_CREATOR", "TVHTML5", "MWEB")) {
                 append("X-Origin", YouTubeClient.ORIGIN_YOUTUBE_MUSIC)
                 append("Referer", YouTubeClient.REFERER_YOUTUBE_MUSIC)
             }
@@ -178,21 +184,29 @@ class InnerTube {
     private suspend fun <T> withRetry(
         maxAttempts: Int = 3,
         initialDelay: Long = 500L,
+        maxDelay: Long = 3000L,
         factor: Double = 2.0,
-        block: suspend () -> T,
-    ): T {
+        block: suspend () -> HttpResponse,
+    ): HttpResponse {
         var currentDelay = initialDelay
-        var attempt = 0
-        while (true) {
+        repeat(maxAttempts - 1) { attempt ->
             try {
-                return block()
-            } catch (e: IOException) {
-                attempt++
-                if (attempt >= maxAttempts) throw e
+                val response = block()
+                // Retry on transient 5xx server errors as well
+                if (response.status.value in 500..599) {
+                    delay(currentDelay)
+                    currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+                } else {
+                    return response
+                }
+            } catch (e: Exception) {
+                if (e is kotlinx.coroutines.CancellationException) throw e
                 delay(currentDelay)
-                currentDelay = (currentDelay * factor).toLong()
+                currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
             }
         }
+        // Final attempt - let it throw if it fails
+        return block()
     }
 
     suspend fun search(
@@ -231,10 +245,10 @@ class InnerTube {
             setBody(
                 PlayerBody(
                     context = client.toContext(locale, visitorData, dataSyncId).let {
-                        if (client.isEmbedded) {
+                        if (client.isEmbedded || client.referer != null) {
                             it.copy(
                                 thirdParty = Context.ThirdParty(
-                                    embedUrl = "https://www.youtube.com/watch?v=${videoId}"
+                                    embedUrl = client.referer ?: "https://www.youtube.com"
                                 )
                             )
                         } else it

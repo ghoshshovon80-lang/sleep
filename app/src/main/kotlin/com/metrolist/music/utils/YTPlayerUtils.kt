@@ -59,12 +59,12 @@ object YTPlayerUtils {
     private val MAIN_CLIENT: YouTubeClient = WEB_REMIX
 
     private val STREAM_FALLBACK_CLIENTS: Array<YouTubeClient> = arrayOf(
-        IOS,
         TVHTML5_SIMPLY_EMBEDDED_PLAYER,
-        ANDROID_TESTSUITE,
+        IOS,
         ANDROID_VR,
-        ANDROID_MUSIC,
         WEB_REMIX,
+        ANDROID_TESTSUITE,
+        ANDROID_MUSIC,
         MWEB,
         WEB,
         MOBILE,
@@ -79,11 +79,11 @@ object YTPlayerUtils {
     private val videoFallbackOffsets = ConcurrentHashMap<String, Int>()
 
     /**
-     * For normal content we prioritize zero-token / unrestricted bypass clients (IOS, TVHTML5)
-     * which return valid streams without requiring PO tokens or user login.
+     * For normal content we prioritize zero-token / unrestricted bypass clients (TVHTML5_SIMPLY_EMBEDDED_PLAYER, IOS)
+     * which return valid streams without requiring PO tokens, bot verification, or user login.
      */
     private val NORMAL_CONTENT_STREAM_START_INDEX: Int =
-        STREAM_FALLBACK_CLIENTS.indexOf(IOS).takeIf { it >= 0 } ?: 0
+        STREAM_FALLBACK_CLIENTS.indexOf(TVHTML5_SIMPLY_EMBEDDED_PLAYER).takeIf { it >= 0 } ?: 0
 
     data class PlaybackData(
         val audioConfig: PlayerResponse.PlayerConfig.AudioConfig?,
@@ -251,7 +251,16 @@ object YTPlayerUtils {
             }
             streamPlayerResponse = currentResponse
 
-            val isPlayable = currentResponse.playabilityStatus.status == "OK" &&
+            val status = currentResponse.playabilityStatus.status
+            val reason = currentResponse.playabilityStatus.reason?.lowercase() ?: ""
+            val isBotOrLoginRequired = reason.contains("bot") ||
+                reason.contains("sign in") ||
+                reason.contains("not available") ||
+                reason.contains("confirm you're not a bot") ||
+                status in listOf("UNPLAYABLE", "LOGIN_REQUIRED", "ERROR", "AGE_CHECK_REQUIRED")
+
+            val isPlayable = status == "OK" &&
+                !isBotOrLoginRequired &&
                 currentResponse.streamingData?.adaptiveFormats?.isNotEmpty() == true
 
             // process current client response

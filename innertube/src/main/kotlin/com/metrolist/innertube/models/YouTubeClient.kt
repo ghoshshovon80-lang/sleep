@@ -22,6 +22,7 @@ data class YouTubeClient(
     val useSignatureTimestamp: Boolean = false,
     val isEmbedded: Boolean = false,
     val useWebPoTokens: Boolean = false,
+    val referer: String? = null,
 ) {
     fun toContext(locale: YouTubeLocale, visitorData: String?, dataSyncId: String?) = Context(
         client = Context.Client(
@@ -36,6 +37,7 @@ data class YouTubeClient(
             hl = locale.hl,
             visitorData = visitorData
         ),
+        thirdParty = if (isEmbedded || referer != null) Context.ThirdParty(embedUrl = referer ?: "https://www.youtube.com") else null,
         user = Context.User(
             onBehalfOfUser = if (loginSupported) dataSyncId else null
         ),
@@ -87,15 +89,16 @@ data class YouTubeClient(
         )
 
         /**
-         * Embedded player that can bypass age-restriction.
-         * Does not require login for age-restricted content.
+         * Embedded player that can bypass age-restriction and bot verification.
+         * Does not require login for playback.
          */
         val TVHTML5_SIMPLY_EMBEDDED_PLAYER = YouTubeClient(
             clientName = "TVHTML5_SIMPLY_EMBEDDED_PLAYER",
-            clientVersion = "2.0",
             clientId = "85",
-            userAgent = "Mozilla/5.0 (PlayStation; PlayStation 4/12.02) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15",
-            loginSupported = true,
+            clientVersion = "2.0",
+            userAgent = "Mozilla/5.0 (PlayStation; PlayStation 4/9.00) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Safari/605.1.15",
+            referer = "https://www.youtube.com",
+            loginSupported = false,
             loginRequired = false,
             useSignatureTimestamp = true,
             isEmbedded = true,
